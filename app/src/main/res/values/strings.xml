@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Alembic</string>
-    <string name="fb_login_button">Login with Facebook</string>
-    <string name="skip_login_button">Continue as Guest</string>
+    <string name="fb_login_string">Login with\nFacebook</string>
+    <string name="skip_login_string">Continue as\nGuest</string>
 </resources>
