@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">Alembic</string>
+    <string name="app_id">923199114422192</string>
     <string name="fb_login_string">Login with\nFacebook</string>
-    <string name="skip_login_string">Continue as\nGuest</string>
+    <string name="skip_login_string">Continue as Guest</string>
+    <string name="suggest_text">Get a Recommendation</string>
+    <string name="view_ratings_text">View Ratings</string>
+    <string name="get_new_text">Check for Scent Updates</string>
+    <string name="rate_text">Rate Scents</string>
 </resources>
