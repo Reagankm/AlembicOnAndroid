@@ -24,15 +24,40 @@ import com.facebook.login.widget.LoginButton;
 
 import java.util.Arrays;
 
+/**
+ * Displays a login screen which lets the user log in
+ * using their Facebook account or bypass the login and
+ * continue as a guest.
+ *
+ * @author Reagan Middlebrook
+ * @version Phase 1
+ */
 public class LoginActivity extends AppCompatActivity {
 
-    private LoginButton fbButton;
-    private Button skipLoginButton;
-    private CallbackManager callbackManager;
+    /** The tag to use when logging from this activity. */
     private static final String TAG="LoginActivityTag";
 
+    /** The Facebook login button */
+    private LoginButton fbButton;
+
+    /** The skip login button (continue as guest). */
+    private Button skipLoginButton;
+
+    /** The callback manager to handle calls from
+     * onActivityResult to Facebook's SDK */
+    private CallbackManager callbackManager;
+
+
+    /**
+     * Creates the Splash Screen UI and calls a method to
+     * redirect the user as needed to either the Login screen
+     * or the main hub.
+     *
+     * @param savedInstanceState any saved instance data
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate super() just called.");
 
@@ -45,38 +70,28 @@ public class LoginActivity extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
         Log.d(TAG, "callbackManager just created");
 
+        //Get the shared preferences which can store data for later activities
         final SharedPreferences sharedPrefs = getSharedPreferences("details", MODE_PRIVATE);
 
-        /*//Check if user is already logged in
-        AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken newAccessToken) {
-                updateWithToken(newAccessToken);
-            }
-        };*/
 
-        /*AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(
-                    AccessToken oldAccessToken,
-                    AccessToken currentAccessToken) {
-                // Set the access token using
-                // currentAccessToken when it's loaded or set.
-            }
-        };*/
-
-        // If the access token is available already assign it.
-        //AccessToken accessToken = AccessToken.getCurrentAccessToken();
-
-
+        //Set up the Facebook login button
         fbButton = (LoginButton) findViewById(R.id.login_button);
         fbButton.setReadPermissions("public_profile");
         Log.d(TAG, "created FB button and set read permissions");
 
+        //Associate the FB button with the callback manager and tell it how to behave
+        //after a user's login attempt
         fbButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 
+            /**
+             * When a user logs in successfully, inform them with a Toast message,
+             * save their name and id for later use, and then launch the hub activity.
+             *
+             * @param loginResult the result of their Facebook login attempt
+             */
             @Override
             public void onSuccess(LoginResult loginResult) {
+
                 //Record success
                 Log.d(TAG, "FB Button callback registered as SUCCESS: " + loginResult);
                 Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_LONG).show();
@@ -86,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPrefs.edit();
                 editor.putString("name", profile.getName());
                 editor.putString("id", profile.getId());
-                editor.commit();
+                editor.apply();
 
                 //Launch the next Activity
                 Intent launchHub = new Intent(LoginActivity.this, HubActivity.class);
@@ -94,6 +109,10 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
             }
 
+            /**
+             * When a user cancels their login attempt, send them a Toast notification
+             * with that information;
+             */
             @Override
             public void onCancel() {
                 Log.d(TAG, "FB Button callback returned to onCancel");
@@ -101,6 +120,12 @@ public class LoginActivity extends AppCompatActivity {
 
             }
 
+            /**
+             * When Facebook returns an error after a user's login attempt, pop up a
+             * Toast notification with details.
+             *
+             * @param exception the FacebookException that resulted
+             */
             @Override
             public void onError(FacebookException exception) {
                 Log.d(TAG, "FB Button callback registered as Error: " + exception);
@@ -109,7 +134,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
+        //When FB button is clicked, attempt to login
         fbButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,7 +147,8 @@ public class LoginActivity extends AppCompatActivity {
         });
         Log.d(TAG, "FB Button onClickListener just created");
 
-
+        //When skipLogin button is clicked, save the user name as "Guest" and launch
+        //the main hub activity
         skipLoginButton = (Button) findViewById(R.id.skip_login);
         skipLoginButton.setOnClickListener(new View.OnClickListener() {
 
@@ -132,6 +158,7 @@ public class LoginActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPrefs.edit();
                 editor.putString("name", "Guest");
                 editor.putString("id", null);
+                editor.apply();
 
                 Intent launchHub = new Intent(LoginActivity.this, HubActivity.class);
                 startActivity(launchHub);
@@ -144,7 +171,10 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-
+    /**
+     * Sets the activity running again when it is resumed after
+     * being paused.
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -153,6 +183,9 @@ public class LoginActivity extends AppCompatActivity {
         AppEventsLogger.activateApp(this);
     }
 
+    /**
+     * Pauses the activity when it is running.
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -161,22 +194,17 @@ public class LoginActivity extends AppCompatActivity {
         AppEventsLogger.deactivateApp(this);
     }
 
+    /**
+     * Called when an activity I launched exits.
+     *
+     * @param requestCode the requestCode the other activity started with
+     * @param resultCode the resultCode returned by the other activity
+     * @param data any additional data from the exited activity
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
-
-    /*private void updateWithToken(AccessToken currentAccessToken) {
-        if (currentAccessToken != null) {
-
-            LOAD ACTIVITY A!
-
-        } else {
-
-            LOAD ACTIVITY B!
-        }
-    }*/
-
 
 }
