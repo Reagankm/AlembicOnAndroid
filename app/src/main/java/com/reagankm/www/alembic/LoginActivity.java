@@ -1,9 +1,8 @@
 package com.reagankm.www.alembic;
 
-import android.app.Activity;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,8 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -49,9 +46,8 @@ public class LoginActivity extends AppCompatActivity {
 
 
     /**
-     * Creates the Splash Screen UI and calls a method to
-     * redirect the user as needed to either the Login screen
-     * or the main hub.
+     * Creates the Login UI with buttons that allow the user to
+     * login with Facebook or skip logging in.
      *
      * @param savedInstanceState any saved instance data
      */

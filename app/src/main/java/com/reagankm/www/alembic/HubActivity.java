@@ -2,7 +2,6 @@ package com.reagankm.www.alembic;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,19 +21,41 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 
-import java.util.Arrays;
-
+/**
+ * Displays the main hub of the app with navigation buttons to
+ * all the actions the app allows.
+ *
+ * @author Reagan Middlebrook
+ * @version Phase 1
+ */
 public class HubActivity extends AppCompatActivity {
 
+    /** The tag to use when logging from this activity. */
+    private static final String TAG = "HubActivityTag";
+
+    /** The button that launches an update of the scent database. */
     private Button updateButton;
+
+    /** The button that launches the rate scents activity. */
     private Button rateButton;
+
+    /** The button that launches the recommendation activity. */
     private Button recommendButton;
+
+    /** The button that launches the review ratings activity. */
     private Button reviewButton;
 
-    private static final String TAG = "HubActivityTag";
-    protected static int newProductCount;
+    /** The callback manager to handle calls from
+     * onActivityResult to Facebook's SDK */
     private CallbackManager callbackManager;
 
+    /**
+     * Creates the Hub UI and calls a method to
+     * redirect the user as needed to either the Login screen
+     * or the main hub.
+     *
+     * @param savedInstanceState any saved instance data
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -44,36 +65,22 @@ public class HubActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_hub);
 
-        //Set text of menu item
-//        MenuItem toggle = (MenuItem) findViewById(R.id.action_login_toggle);
-//        if (isLoggedIn()){
-//            toggle.setTitle("Log Out");
-//        } else {
-//            toggle.setTitle("Log In");
-//        }
-
         callbackManager = CallbackManager.Factory.create();
-
 
         //Get user's name and set welcome message
         final SharedPreferences sharedPrefs = getSharedPreferences("details", MODE_PRIVATE);
 
-        String nameStr = sharedPrefs.getString("name", null);
-        String idStr = sharedPrefs.getString("id", null);
-        //AccessToken token = AccessToken.getCurrentAccessToken();
+        String name = sharedPrefs.getString("name", null);
+        String id = sharedPrefs.getString("id", null);
 
         final TextView welcomeMessage = (TextView) findViewById(R.id.welcome_text);
 
-
-//        if(token != null)
-  //      {
-        if(nameStr != null)
-        {
-            welcomeMessage.setText("Welcome, " + nameStr + ", to");
+        if (name != null) {
+            welcomeMessage.setText("Welcome, " + name + ", to");
 
         }
-        //}
 
+        //Set up Facebook Login Manager for later use with the menu
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 
             @Override
@@ -109,7 +116,7 @@ public class HubActivity extends AppCompatActivity {
             }
         });
 
-
+        //Create buttons and set onClickListeners
         updateButton = (Button) findViewById(R.id.update_button);
         rateButton = (Button) findViewById(R.id.rate_button);
         recommendButton = (Button) findViewById(R.id.suggest_button);
@@ -126,8 +133,6 @@ public class HubActivity extends AppCompatActivity {
                 ScentScraperTask scrapes = new ScentScraperTask(HubActivity.this);
                 scrapes.execute();
 
-                //Intent launchHub = new Intent(HubActivity.this, HubActivity.class);
-                //startActivity(launchHub);
 
             }
         });
@@ -135,6 +140,13 @@ public class HubActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Inflate the menu and display LogOut menu item only if
+     * user is currently logged in.
+     *
+     * @param menu the menu to be inflated
+     * @return whether the menu inflation was successful
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -152,36 +164,36 @@ public class HubActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * A helper method that returns whether or not the user is
+     * logged in.
+     *
+     * @return true if the user is logged in with Facebook, otherwise
+     * false
+     */
     private boolean isLoggedIn() {
         //If there is an access token, user is logged in
         return AccessToken.getCurrentAccessToken() != null;
     }
 
+    /**
+     * Defines how to behave when a menu option is selected.
+     *
+     * @param item the menu item selected
+     * @return whether the menu item processed successfully
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_login_toggle) {
+                //Log the user out and return them to the Login screen
 
-            //if (isLoggedIn()){
-
-                //Log user out and return to login screen
                 LoginManager.getInstance().logOut();
                 Intent launchHub = new Intent(HubActivity.this, LoginActivity.class);
                 startActivity(launchHub);
                 finish();
-
-            /*} else {
-
-                //Let user login with Facebook
-                LoginManager.getInstance().logInWithReadPermissions(HubActivity.this, Arrays.asList("public_profile"));
-
-            }*/
-
 
             return true;
         } else {
@@ -190,9 +202,5 @@ public class HubActivity extends AppCompatActivity {
 
 
     }
-
-
-
-
 
 }
