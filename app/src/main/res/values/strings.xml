@@ -7,4 +7,5 @@
     <string name="view_ratings_text">View Ratings</string>
     <string name="get_new_text">Check for Scent Updates</string>
     <string name="rate_text">Rate Scents</string>
+    <string name="welcome">Welcome</string>
 </resources>

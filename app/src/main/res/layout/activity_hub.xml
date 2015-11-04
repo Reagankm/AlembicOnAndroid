@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/welcome_text"
+        android:text="@string/welcome"
         />
     <ImageView
         android:layout_width="wrap_content"
@@ -33,7 +34,7 @@
         <Button
             android:layout_width="96dp"
             android:layout_height="96dp"
-            android:id="@+id/get_new_button"
+            android:id="@+id/update_button"
             android:text="@string/get_new_text"
             />
     </LinearLayout>
@@ -78,7 +79,7 @@
         <Button
             android:layout_width="96dp"
             android:layout_height="96dp"
-            android:id="@+id/view_ratings_button"
+            android:id="@+id/review_button"
             android:text="@string/view_ratings_text"/>
 
 
