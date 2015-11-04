@@ -29,7 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     private LoginButton fbButton;
     private Button skipLoginButton;
     private CallbackManager callbackManager;
-    private static final String TAG="LoginActivity";
+    private static final String TAG="LoginActivityTag";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,16 +39,6 @@ public class LoginActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         Log.d(TAG, "FB Sdk just initialized");
 
-        //Verify if user is already logged in
-        AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken newAccessToken) {
-                updateWithToken(newAccessToken);
-            }
-        };
-
-        updateWithToken(AccessToken.getCurrentAccessToken());
-
         setContentView(R.layout.activity_login);
         Log.d(TAG, "setContentView just occurred");
 
@@ -57,13 +47,13 @@ public class LoginActivity extends AppCompatActivity {
 
         final SharedPreferences sharedPrefs = getSharedPreferences("details", MODE_PRIVATE);
 
-        //Check if user is already logged in
+        /*//Check if user is already logged in
         AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken newAccessToken) {
                 updateWithToken(newAccessToken);
             }
-        };
+        };*/
 
         /*AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
             @Override
@@ -76,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
         };*/
 
         // If the access token is available already assign it.
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        //AccessToken accessToken = AccessToken.getCurrentAccessToken();
 
 
         fbButton = (LoginButton) findViewById(R.id.login_button);
@@ -101,6 +91,7 @@ public class LoginActivity extends AppCompatActivity {
                 //Launch the next Activity
                 Intent launchHub = new Intent(LoginActivity.this, HubActivity.class);
                 startActivity(launchHub);
+                finish();
             }
 
             @Override
@@ -144,6 +135,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 Intent launchHub = new Intent(LoginActivity.this, HubActivity.class);
                 startActivity(launchHub);
+                finish();
 
             }
         });
@@ -186,31 +178,5 @@ public class LoginActivity extends AppCompatActivity {
         }
     }*/
 
-    private void updateWithToken(AccessToken currentAccessToken) {
-        int timeout = 500;
-        if (currentAccessToken != null) {
-            new Handler().postDelayed(new Runnable() {
 
-                @Override
-                public void run() {
-                    //If user is already logged in, take them to the hub
-                    Intent i = new Intent(LoginActivity.this, HubActivity.class);
-                    startActivity(i);
-
-                    finish();
-                }
-            }, timeout);
-        } else {
-            new Handler().postDelayed(new Runnable() {
-
-                @Override
-                public void run() {
-                    Intent i = new Intent(SplashScreen.this, Login.class);
-                    startActivity(i);
-
-                    finish();
-                }
-            }, SPLASH_TIME_OUT);
-        }
-    }
 }
