@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "callbackManager just created");
 
         //Get the shared preferences which can store data for later activities
-        final SharedPreferences sharedPrefs = getSharedPreferences("details", MODE_PRIVATE);
+        final SharedPreferences sharedPrefs = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE);
 
 
         //Set up the Facebook login button

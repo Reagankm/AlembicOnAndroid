@@ -68,7 +68,7 @@ public class HubActivity extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
 
         //Get user's name and set welcome message
-        final SharedPreferences sharedPrefs = getSharedPreferences("details", MODE_PRIVATE);
+        final SharedPreferences sharedPrefs = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE);
 
         String name = sharedPrefs.getString("name", null);
         String id = sharedPrefs.getString("id", null);
