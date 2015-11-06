@@ -11,6 +11,16 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    signingConfigs {
+        release {
+            storeFile file("com-reagankm-www-alembic.keystore")
+            storePassword "T6WsNj8LHSmK"
+            keyAlias "alembic"
+            keyPassword "T6WsNj8LHSmK"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
