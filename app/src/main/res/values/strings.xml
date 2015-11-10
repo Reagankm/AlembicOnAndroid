@@ -10,4 +10,9 @@
     <string name="welcome">Welcome</string>
     <string name="login_toggle">Log Out</string>
     <string name="prefs_file">com.reagankm.www.alembic.details</string>
+    <string name="yes_update">Yes, Update Scents</string>
+    <string name="no_update">Never Mind</string>
+    <string name="dialog_title">Update Scents?</string>
+    <string name="dialog_message_pt_1">Scents last updated on\n</string>
+    <string name="dialog_message_pt_2">.\n\nDo you wish to update scents now?</string>
 </resources>

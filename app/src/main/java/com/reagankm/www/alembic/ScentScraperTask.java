@@ -116,7 +116,7 @@ public class ScentScraperTask extends AsyncTask<String, Integer, String> {
             //Examine all scents in the product list
             Elements productHeader = doc.getElementsByClass("products");
             for (Element el : productHeader){
-                Log.d(TAG, "Parsing an element within productHeader");
+                //Log.d(TAG, "Parsing an element within productHeader");
                 Element productList = el.nextElementSibling();
                 Elements products = productList.getElementsByTag("a");
 
@@ -134,7 +134,7 @@ public class ScentScraperTask extends AsyncTask<String, Integer, String> {
                     //Encode name and id so they're safe to pass as part of a web address
                     name = URLEncoder.encode(name, "UTF-8");
                     id = URLEncoder.encode(id, "UTF-8");
-                    Log.d(TAG, "After Encoding: Title = " + name + ", id = " + id);
+                    //Log.d(TAG, "After Encoding: Title = " + name + ", id = " + id);
 
                     //Send the product to be added to the database via the PHP script
                     if (id.length() > 0 && name.length() > 0) {
@@ -155,7 +155,7 @@ public class ScentScraperTask extends AsyncTask<String, Integer, String> {
             //h2.topic + table selects the table under the topic header
             //thing ul selects all ul children of thing
             Elements ingredientList = doc.select("h2.topic + table ul");
-            Log.d(TAG, "Fetched ingredient list");
+            //Log.d(TAG, "Fetched ingredient list");
             for (Element el : ingredientList){
                 Elements ingredients = el.getElementsByTag("a");
                 for (Element e : ingredients){
@@ -171,13 +171,13 @@ public class ScentScraperTask extends AsyncTask<String, Integer, String> {
 
                     Document ingredientDoc = Jsoup.connect(path).timeout(0).maxBodySize(10*1024*1024).get();
                     Elements productsFound = ingredientDoc.getElementsByClass("product_item");
-                    Log.d(TAG, "Extracted product_items from ingredientDoc");
+                    //Log.d(TAG, "Extracted product_items from ingredientDoc");
                     for (Element prod : productsFound){
                         Elements productHead = prod.getElementsByTag("h2");
-                        Log.d(TAG, "Extracted h2s from product_items");
+                        //Log.d(TAG, "Extracted h2s from product_items");
                         for (Element h2 : productHead){
                             Elements productList = h2.getElementsByTag("a");
-                            Log.d(TAG, "Extracted links from h2s");
+                            //Log.d(TAG, "Extracted links from h2s");
                             for (Element p : productList){
                                 //Add to scent list if it's not already there
                                 String name = p.text();
@@ -214,20 +214,14 @@ public class ScentScraperTask extends AsyncTask<String, Integer, String> {
                                     }
 
                                 }
-
-
-
                             }
                         }
                     }
-
 
                 }
 
                 //stop processing (don't continue to the other ULs that were pulled)
                 break;
-
-
             }
         } catch (IOException e){
             Log.e(TAG, "IOException in doInBackground " + e.toString());

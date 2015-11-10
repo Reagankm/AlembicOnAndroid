@@ -2,6 +2,7 @@ package com.reagankm.www.alembic;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,7 +29,7 @@ import com.facebook.login.LoginResult;
  * @author Reagan Middlebrook
  * @version Phase 1
  */
-public class HubActivity extends AppCompatActivity {
+public class HubActivity extends AppCompatActivity implements UpdateDialogFragment.UpdateDialogListener {
 
     /** The tag to use when logging from this activity. */
     private static final String TAG = "HubActivityTag";
@@ -127,12 +128,12 @@ public class HubActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
 
-                //Scrape and parse BPAL data and update database with it, then
-                //display message to let the user know how much new data was found
-                //(So they know button did something)
-                ScentScraperTask scrapes = new ScentScraperTask(HubActivity.this);
-                scrapes.execute();
+                // Make sure the user wants to update
+                DialogFragment dialog = new UpdateDialogFragment();
+                dialog.show(getSupportFragmentManager(), "UpdateDialogFragment");
 
+                //If they choose yes, dialog will call onDialogPositiveClick to handle
+                //update
 
             }
         });
@@ -202,5 +203,22 @@ public class HubActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog){
+        //Scrape and parse BPAL data and update database with it, then
+        //display message to let the user know how much new data was found
+        //(So they know button did something)
+
+        ScentScraperTask scrapes = new ScentScraperTask(HubActivity.this);
+        scrapes.execute();
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog){
+        //No action needed
+    }
+
+
 
 }
