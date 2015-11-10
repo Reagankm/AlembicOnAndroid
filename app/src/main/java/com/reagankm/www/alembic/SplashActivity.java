@@ -40,6 +40,9 @@ public class SplashActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_splash);
 
+        //Save the dates database was last updated
+        new LastUpdatedTask(SplashActivity.this).execute();
+
         //Verify whether user is already logged in
         AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
             @Override

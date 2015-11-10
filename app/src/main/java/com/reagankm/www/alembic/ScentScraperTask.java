@@ -227,41 +227,7 @@ public class ScentScraperTask extends AsyncTask<String, Integer, String> {
                 //stop processing (don't continue to the other ULs that were pulled)
                 break;
 
-//                Log.d(TAG, "Parsing an element within topicHeader");
-//                Element table = el.firstElementSibling();
-//                Elements listOfLists = table.getElementsByTag("ul");
-//                Element ingredientList = listOfLists.first();
-//                Elements ingredients = ingredientList.getElementsByTag("a");
-//
-//                //Send the name and unique id of each product to be passed into the
-//                //database
-//                for (Element p : ingredients){
-//                    String name = p.attr("title");
-//
-//                    //The id is the unique part of the product's URL
-//                    //(To differentiate between scents with the same name)
-//                    String id = p.attr("href");
-//                    id = id.substring(STORE_PATH.length());
-//                    Log.d(TAG, "Before Encoding: Title = " + name + ", id = " + id);
-//
-//                    //Encode name and id so they're safe to pass as part of a web address
-//                    name = URLEncoder.encode(name, "UTF-8");
-//                    id = URLEncoder.encode(id, "UTF-8");
-//                    Log.d(TAG, "After Encoding: Title = " + name + ", id = " + id);
-//
-//                    //Send the product to be added to the database via the PHP script
-//                    if (id.length() > 0 && name.length() > 0) {
-//
-//                        String requestURL = addScentPhpUrl + "?id=" + id + "&name=" + name;
-//                        String phpResult = downloadUrl(requestURL);
-//
-//                        //Update the progress dialog by 1 scent
-//                        publishProgress(1);
-//                        if (scentAddedSuccessfully(phpResult)) {
-//                            productCount++;
-//                        }
-//                    }
-//                }
+
             }
         } catch (IOException e){
             Log.e(TAG, "IOException in doInBackground " + e.toString());
@@ -277,98 +243,6 @@ public class ScentScraperTask extends AsyncTask<String, Integer, String> {
         return result;
     }
 
-    /*//Searches for scents in the Product list
-    private int addScentsByIngredient(Document doc){
-        int productCount = 0;
-        try {
-            Elements productHeader = doc.getElementsByClass("products");
-            for (Element el : productHeader){
-                Log.d(TAG, "Parsing an element within productHeader");
-                Element productList = el.nextElementSibling();
-                Elements products = productList.getElementsByTag("a");
-
-                //Send the name and unique id of each product to be passed into the
-                //database
-                for (Element p : products){
-                    String name = p.attr("title");
-
-                    //The id is the unique part of the product's URL
-                    //(To differentiate between scents with the same name)
-                    String id = p.attr("href");
-                    id = id.substring(STORE_PATH.length());
-                    Log.d(TAG, "Before Encoding: Title = " + name + ", id = " + id);
-
-                    //Encode name and id so they're safe to pass as part of a web address
-                    name = URLEncoder.encode(name, "UTF-8");
-                    id = URLEncoder.encode(id, "UTF-8");
-                    Log.d(TAG, "After Encoding: Title = " + name + ", id = " + id);
-
-                    //Send the product to be added to the database via the PHP script
-                    if (id.length() > 0 && name.length() > 0) {
-
-                        String requestURL = addScentPhpUrl + "?id=" + id + "&name=" + name;
-                        String phpResult = downloadUrl(requestURL);
-
-                        //Update the progress dialog by 1 scent
-                        publishProgress(1);
-                        if (scentAddedSuccessfully(phpResult)) {
-                            productCount++;
-                        }
-                    }
-                }
-            }
-        } catch (IOException e){
-            Log.e(TAG, "IOException in addScentsByIngredient " + e.toString());
-        }
-        return productCount;
-    }
-
-    //Searches for scents in the Product list
-    private int addScentsByName(Document doc){
-        int productCount = 0;
-        try {
-            Elements productHeader = doc.getElementsByClass("products");
-            for (Element el : productHeader){
-                Log.d(TAG, "Parsing an element within productHeader");
-                Element productList = el.nextElementSibling();
-                Elements products = productList.getElementsByTag("a");
-
-                //Send the name and unique id of each product to be passed into the
-                //database
-                for (Element p : products){
-                    String name = p.attr("title");
-
-                    //The id is the unique part of the product's URL
-                    //(To differentiate between scents with the same name)
-                    String id = p.attr("href");
-                    id = id.substring(STORE_PATH.length());
-                    Log.d(TAG, "Before Encoding: Title = " + name + ", id = " + id);
-
-                    //Encode name and id so they're safe to pass as part of a web address
-                    name = URLEncoder.encode(name, "UTF-8");
-                    id = URLEncoder.encode(id, "UTF-8");
-                    Log.d(TAG, "After Encoding: Title = " + name + ", id = " + id);
-
-                    //Send the product to be added to the database via the PHP script
-                    if (id.length() > 0 && name.length() > 0) {
-
-                        String requestURL = addScentPhpUrl + "?id=" + id + "&name=" + name;
-                        String phpResult = downloadUrl(requestURL);
-
-                        //Update the progress dialog by 1 scent
-                        publishProgress(1);
-                        if (scentAddedSuccessfully(phpResult)) {
-                            productCount++;
-                        }
-                    }
-                }
-            }
-        } catch (IOException e){
-            Log.e(TAG, "IOException in addScentsByName " + e.toString());
-        }
-        return productCount;
-    }
-*/
     /**
      * A helper method to check the result returned by the PHP file and
      * determine whether the product was or was not added to the database.

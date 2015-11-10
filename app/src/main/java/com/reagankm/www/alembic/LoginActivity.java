@@ -165,6 +165,7 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "Skip Login Button onClickListener just created");
 
 
+
     }
 
     /**
