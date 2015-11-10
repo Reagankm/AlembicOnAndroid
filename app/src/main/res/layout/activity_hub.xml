@@ -23,16 +23,30 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:src="@drawable/alembic_logo"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
         <ImageView
+            android:id="@+id/get_new_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/reading_lady_96"/>
+            android:src="@drawable/reading_lady_96"
+            />
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:progressDrawable="@drawable/progress_bar_states"
+            android:layout_width="match_parent"
+            android:layout_height="96dp"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:indeterminateOnly="false"
+            android:visibility="gone"
+            >
+        </ProgressBar>
         <Button
+
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -40,6 +54,7 @@
             android:text="@string/get_new_text"
             />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -96,5 +111,6 @@
             android:src="@drawable/reading_lady_96"/>
 
     </LinearLayout>
+
 
 </LinearLayout>
