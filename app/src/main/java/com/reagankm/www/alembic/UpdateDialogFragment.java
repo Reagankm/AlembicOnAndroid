@@ -9,9 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
 import android.support.v7.app.AlertDialog;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,6 +20,9 @@ import java.util.Date;
  * A simple {@link DialogFragment} subclass.
  */
 public class UpdateDialogFragment extends DialogFragment {
+
+    private static final String TAG="UpdateDialogFragmentTag";
+
 
     // Use this instance of the interface to deliver action events
     UpdateDialogListener mListener;
@@ -66,9 +67,12 @@ public class UpdateDialogFragment extends DialogFragment {
         try {
 
             Date scent = formatter.parse(scent_date);
+            Log.d(TAG, "Scent date = " + scent.toString());
             Date ingredient = formatter.parse(ingredient_date);
-            result = scent.compareTo(ingredient) > 1 ? scent.toString() : ingredient.toString();
-
+            Log.d(TAG, "Ingredient date = " + ingredient.toString());
+            result = (scent.compareTo(ingredient) > 0) ? scent.toString() : ingredient.toString();
+            Log.d(TAG, "Scent.compareTo(ingredient) = " + scent.compareTo(ingredient)
+                    + ", so result = " + result);
         } catch (ParseException e) {
 
             e.printStackTrace();
@@ -78,9 +82,9 @@ public class UpdateDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
 
         String dialogString = getString(R.string.dialog_message_pt_1) + newestDate()
                 + getString(R.string.dialog_message_pt_2);
@@ -102,6 +106,8 @@ public class UpdateDialogFragment extends DialogFragment {
 
                     }
                 });
+
+
         // Create the AlertDialog object and return it
         return builder.create();
     }
