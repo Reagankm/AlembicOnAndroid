@@ -138,6 +138,20 @@ public class HubActivity extends AppCompatActivity implements UpdateDialogFragme
             }
         });
 
+        rateButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v){
+
+                Intent launchDirectory = new Intent(HubActivity.this, DirectoryActivity.class);
+                startActivity(launchDirectory);
+
+
+            }
+
+
+        });
+
     }
 
 
