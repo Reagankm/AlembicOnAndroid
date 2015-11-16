@@ -22,13 +22,6 @@ public class DirectoryActivity extends FragmentActivity {
 
     GridView directory;
 
-//    static final String[] numbers = new String[]{
-//            "#", "A", "B", "C", "D", "E",
-//            "F", "G", "H", "I", "J", "K",
-//            "L", "M", "N", "O", "P", "Q",
-//            "R", "S", "T", "U", "V", "W",
-//            "X", "Y", "Z"};
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,10 +36,6 @@ public class DirectoryActivity extends FragmentActivity {
         int columnWidth = (int) ((width - ((columns + 1) * padding)) / columns);
         directory.setColumnWidth(columnWidth);
 
-        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-        //        android.R.layout.simple_list_item_1, numbers);
-
-        //directory.setAdapter(adapter);
         directory.setAdapter(new MyAdapter(this));
 
         directory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -58,13 +47,7 @@ public class DirectoryActivity extends FragmentActivity {
                 Toast.makeText(getApplicationContext(),
                         "Position: " + position, Toast.LENGTH_SHORT).show();
 
-
-//                final SharedPreferences sharedPrefs
-//                        = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE);
-//
-//                SharedPreferences.Editor editor = sharedPrefs.edit();
                 String letter = "" + ((char) (position + 64));
-//                editor.putString("letter", letter);
 
                 Intent subDirectory = ScentListActivity.createIntent(DirectoryActivity.this, letter);
                 startActivity(subDirectory);
@@ -76,18 +59,41 @@ public class DirectoryActivity extends FragmentActivity {
 
     private class MyAdapter extends BaseAdapter
     {
-        private List<Item> items = new ArrayList<>();
+        private List<GridItem> items = new ArrayList<>();
         private LayoutInflater inflater;
 
         public MyAdapter(Context context)
         {
             inflater = LayoutInflater.from(context);
 
-            items.add(new Item(R.drawable.reading_lady_96, "A"));
-            items.add(new Item(R.drawable.a, "B"));
-            items.add(new Item(R.drawable.reading_lady_96, "C"));
-            items.add(new Item(R.drawable.reading_lady_96, "D"));
-            items.add(new Item(R.drawable.a, "E"));
+            //Create pictures for each directory letter
+            items.add(new GridItem(R.drawable.hash_square));
+            items.add(new GridItem(R.drawable.a_square));
+            items.add(new GridItem(R.drawable.b_square));
+            items.add(new GridItem(R.drawable.c_square));
+            items.add(new GridItem(R.drawable.d_square));
+            items.add(new GridItem(R.drawable.e_square));
+            items.add(new GridItem(R.drawable.f_square));
+            items.add(new GridItem(R.drawable.g_square));
+            items.add(new GridItem(R.drawable.h_square));
+            items.add(new GridItem(R.drawable.i_square));
+            items.add(new GridItem(R.drawable.j_square));
+            items.add(new GridItem(R.drawable.k_square));
+            items.add(new GridItem(R.drawable.l_square));
+            items.add(new GridItem(R.drawable.m_square));
+            items.add(new GridItem(R.drawable.n_square));
+            items.add(new GridItem(R.drawable.o_square));
+            items.add(new GridItem(R.drawable.p_square));
+            items.add(new GridItem(R.drawable.q_square));
+            items.add(new GridItem(R.drawable.r_square));
+            items.add(new GridItem(R.drawable.s_square));
+            items.add(new GridItem(R.drawable.t_square));
+            items.add(new GridItem(R.drawable.u_square));
+            items.add(new GridItem(R.drawable.v_square));
+            items.add(new GridItem(R.drawable.w_square));
+            items.add(new GridItem(R.drawable.x_square));
+            items.add(new GridItem(R.drawable.y_square));
+            items.add(new GridItem(R.drawable.z_square));
         }
 
         @Override
@@ -118,29 +124,25 @@ public class DirectoryActivity extends FragmentActivity {
             {
                 v = inflater.inflate(R.layout.directory_item, viewGroup, false);
                 v.setTag(R.id.picture, v.findViewById(R.id.picture));
-                //v.setTag(R.id.text, v.findViewById(R.id.text));
             }
 
             picture = (ImageView)v.getTag(R.id.picture);
-            picture.setPadding(5, 5, 5, 5);
-            //name = (TextView)v.getTag(R.id.text);
 
-            Item item = (Item)getItem(i);
+            GridItem item = (GridItem)getItem(i);
 
             picture.setImageResource(item.drawableId);
-            //name.setText(item.name);
 
             return v;
         }
 
-        private class Item
+        private class GridItem
         {
             //final String name;
             final int drawableId;
-            final String letter;
+            //final String letter;
 
-            Item(int drawableId, String letter)
-            {   this.letter = letter;
+            GridItem(int drawableId)
+            {  // this.letter = letter;
                 //this.name = name;
                 this.drawableId = drawableId;
             }

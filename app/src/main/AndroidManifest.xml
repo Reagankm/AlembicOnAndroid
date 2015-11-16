@@ -47,6 +47,8 @@
         </activity>
         <activity android:name=".DirectoryActivity" >
         </activity>
+        <activity android:name=".ScentActivity" >
+        </activity>
     </application>
 
 </manifest>

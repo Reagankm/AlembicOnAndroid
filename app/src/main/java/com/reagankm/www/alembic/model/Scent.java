@@ -29,42 +29,14 @@ public class Scent {
         ITEM_MAP.put(item.id, item);
     }
 
+    public static ScentInfo getItem(int position) {
+        return ITEMS.get(position);
+    }
+
     public static void sortItems() {
         Collections.sort(ITEMS);
     }
 
-    /**
-     * A dummy item representing a piece of content.
-     */
-    public static class ScentInfo implements Comparable {
-        public String id;
-        public String name;
 
-        public ScentInfo(String id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-
-        public int compareTo(Object o){
-
-            ScentInfo other = (ScentInfo) o;
-
-            int result = name.compareTo(other.name);
-
-            if (result == 0) {
-                result = id.compareTo(other.id);
-            }
-
-            return result;
-        }
-
-
-
-
-        @Override
-        public String toString() {
-            return name;
-        }
-    }
 }
 

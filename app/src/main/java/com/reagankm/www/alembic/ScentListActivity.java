@@ -30,11 +30,11 @@ public class ScentListActivity extends FragmentActivity {
         }
 
 
-
         setContentView(R.layout.activity_scent_list);
 
+        //Display ScentList fragment
         FragmentManager fragManager = getSupportFragmentManager();
-        Fragment theFragment = fragManager.findFragmentById(R.id.fragment_container);
+        Fragment theFragment = fragManager.findFragmentById(R.id.fragment_list_container);
 
         if (theFragment == null) {
             theFragment = new ScentListFragment();
@@ -44,7 +44,7 @@ public class ScentListActivity extends FragmentActivity {
             theFragment.setArguments(bundle);
 
             fragManager.beginTransaction()
-                    .add(R.id.fragment_container, theFragment)
+                    .add(R.id.fragment_list_container, theFragment)
                     .commit();
         }
 
