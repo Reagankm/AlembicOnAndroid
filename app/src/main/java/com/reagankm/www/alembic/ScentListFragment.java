@@ -1,8 +1,10 @@
 package com.reagankm.www.alembic;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatRatingBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -62,7 +64,7 @@ public class ScentListFragment extends Fragment {
         scentListRecyclerView
                 = (RecyclerView) thisView.findViewById(R.id.scent_recycler_view);
         scentListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
+        updateUI();
 
 
         return thisView;
@@ -85,21 +87,41 @@ public class ScentListFragment extends Fragment {
 
     //Gets the widgets from my item_list_scent view (the row view for each scent)
     //and assigns their values
-    private class ScentHolder extends RecyclerView.ViewHolder {
+    private class ScentHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
 
-        public TextView nameTextView;
-        //public TextView idTextView;
+        private static final String TAG = "ScentHolderTag";
+
+        private TextView nameTextView;
+
+        private ScentInfo scent;
 
         public ScentHolder(View itemView) {
             super(itemView);
             nameTextView = (TextView) itemView.findViewById(R.id.item_list_scent_name);
 
+            itemView.setOnClickListener(this);
         }
 
+
+        public void bindScent(ScentInfo scent) {
+            this.scent = scent;
+            Log.d(TAG, "bindScent with id " + scent.id + ", name " + scent.name);
+            nameTextView.setText(scent.name);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Log.d(TAG, "oncClick creating intent for scent with id " + scent.id + ", name "
+                    + scent.name);
+            Intent i = ScentActivity.createIntent(getContext(), scent);
+
+            startActivity(i);
+        }
     }
 
     private class ScentAdapter extends RecyclerView.Adapter<ScentHolder> {
-
+        private static final String TAG = "ScentAdapterTag";
         private List<ScentInfo> scentList;
 
         public ScentAdapter(List<ScentInfo> scents) {
@@ -111,6 +133,7 @@ public class ScentListFragment extends Fragment {
         public ScentHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
             View v = inflater.inflate(R.layout.item_list_scent, parent, false);
+
             return new ScentHolder(v);
         }
 
@@ -118,7 +141,8 @@ public class ScentListFragment extends Fragment {
         @Override
         public void onBindViewHolder(ScentHolder holder, int position) {
             ScentInfo scent = scentList.get(position);
-            holder.nameTextView.setText(scent.name);
+            //holder.nameTextView.setText(scent.name);
+            holder.bindScent(scent);
         }
 
 

@@ -7,12 +7,19 @@ package com.reagankm.www.alembic.model;
  * A dummy item representing a piece of content.
  */
 public class ScentInfo implements Comparable {
-    public String id;
-    public String name;
+    private String id;
+    private String name;
+    private int rating;
 
     public ScentInfo(String id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public ScentInfo(String id, String name, int rating) {
+        this.id = id;
+        this.name = name;
+        this.rating = rating;
     }
 
     public int compareTo(Object o){
@@ -28,8 +35,22 @@ public class ScentInfo implements Comparable {
         return result;
     }
 
+    public String getId() {
+        return id;
+    }
 
 
+    public String getName() {
+        return name;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
 
     @Override
     public String toString() {

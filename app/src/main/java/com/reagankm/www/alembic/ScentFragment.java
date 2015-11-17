@@ -1,12 +1,15 @@
 package com.reagankm.www.alembic;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatRatingBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 
@@ -24,6 +27,8 @@ public class ScentFragment extends Fragment {
 
     private View thisView;
 
+    private AppCompatRatingBar rating;
+
     public ScentFragment() {
         // Required empty public constructor
         Log.d(TAG, "ScentFragment constructed");
@@ -37,7 +42,19 @@ public class ScentFragment extends Fragment {
             name = savedInstanceState.getString(ScentActivity.getNameKey());
             id = savedInstanceState.getString(ScentActivity.getIdKey());
 
+        } else {
+            Log.d(TAG, "onCreate has no savedInstanceState");
         }
+
+        Activity activity = (Activity) getContext();
+
+        rating = (AppCompatRatingBar) activity.findViewById(R.id.detail_rating_bar);
+        rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                //TODO: Save rating
+            }
+        });
 
     }
 

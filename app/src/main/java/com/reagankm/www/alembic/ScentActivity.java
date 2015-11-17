@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.reagankm.www.alembic.model.ScentInfo;
 
@@ -14,7 +15,8 @@ public class ScentActivity extends AppCompatActivity {
     private static final String SCENT_ID_SELECTED
             = "com.reagankm.www.alembic.scent_id_selected";
     private static final String SCENT_NAME_SELECTED
-            = "com.reagankm.www.alembic.scent_NAME_selected";
+            = "com.reagankm.www.alembic.scent_name_selected";
+    private static final String TAG = "ScentActivityTag";
 
     private String scentId;
     private String scentName;
@@ -27,9 +29,11 @@ public class ScentActivity extends AppCompatActivity {
         if (savedInstanceState != null){
             scentId = savedInstanceState.getString(SCENT_ID_SELECTED);
             scentName = savedInstanceState.getString(SCENT_NAME_SELECTED);
+            Log.d(TAG, "onCreate, restoring from savedInstanceState for scent " +
+                    "with id " + scentId + ", name " + scentName);
         } else {
             scentId = getIntent().getStringExtra(SCENT_ID_SELECTED);
-            scentId = getIntent().getStringExtra(SCENT_NAME_SELECTED);
+            scentName = getIntent().getStringExtra(SCENT_NAME_SELECTED);
         }
 
 
@@ -68,6 +72,8 @@ public class ScentActivity extends AppCompatActivity {
         Intent i = new Intent(packageContext, ScentActivity.class);
         i.putExtra(SCENT_ID_SELECTED, scent.id);
         i.putExtra(SCENT_NAME_SELECTED, scent.name);
+        Log.d(TAG, "createIntent with ScentInfo object name " + scent.name
+                + ", id " + scent.id);
         return i;
     }
 

@@ -3,16 +3,32 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
+              android:gravity="center"
               tools:context="com.reagankm.www.alembic.ScentFragment">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/scent_detail_name"/>
+        android:id="@+id/scent_detail_name"
+        android:gravity="center"
+        style="@android:style/TextAppearance.DeviceDefault.Large"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scent_detail_id"
+        android:gravity="center"
+        style="@android:style/TextAppearance.DeviceDefault.Medium"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/scent_detail_id"/>
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:text="@string/rate_scent_instructions"/>
+    <android.support.v7.widget.AppCompatRatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/detail_rating_bar"/>
+
 
 
 </LinearLayout>

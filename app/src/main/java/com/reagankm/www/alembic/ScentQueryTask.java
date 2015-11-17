@@ -162,15 +162,6 @@ public class ScentQueryTask extends AsyncTask<String, Void, String> {
             //Put them in alphabetical order
             Scent.sortItems();
 
-            //Update view with them
-            //Activity activity = (Activity) theContext;
-            //ListView listView = (ListView) activity.findViewById(android.R.id.list);
-            //List<ScentInfo> scentList = Scent.ITEMS;
-
-//            ScentListAdapter<ScentInfo> adapter
-  //                  = new ScentListAdapter<>(theContext, scentList);
-
-    //        listView.setAdapter(adapter);
             theFragment.updateUI();
 
 
@@ -183,37 +174,6 @@ public class ScentQueryTask extends AsyncTask<String, Void, String> {
             dialog.dismiss();
         }
     }
-
-//
-//    private class ScentListAdapter<T> extends ArrayAdapter<ScentInfo> {
-//
-//        public ScentListAdapter(Context context, List<ScentInfo> scents) {
-//            super(context, 0, scents);
-//        }
-//
-//        @Override
-//        public View getView(int position, View view, ViewGroup parent) {
-//            // Get the data item for this position
-//            ScentInfo scent = getItem(position);
-//            // Check if an existing view is being reused, otherwise inflate the view
-//            if (view == null) {
-//                view = LayoutInflater.from(getContext()).inflate(R.layout.item_list_scent, parent, false);
-//
-//            }
-//            // Lookup view for data population
-//            TextView idView = (TextView) view.findViewById(R.id.scent_list_id);
-//            TextView nameView = (TextView) view.findViewById(R.id.scent_list_name);
-//            // Populate the data into the template view using the data object
-//            idView.setText(scent.id);
-//            nameView.setText(scent.name);
-//            //nameView.setPadding(5, 5, 5, 5);
-//            //nameView.setTextSize(12);
-//            // Return the completed view to render on screen
-//
-//            return view;
-//        }
-//    }
-//
 
 
 }
