@@ -1,16 +1,5 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="com.reagankm.www.alembic.ScentListFragment">
-
-    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-          android:id="@android:id/list"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent" 
-          android:theme="@style/ListTheme"
-          >
-
-    </ListView>
-
-</FrameLayout>
+<android.support.v7.widget.RecyclerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scent_recycler_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />

@@ -33,6 +33,10 @@ public class Scent {
         return ITEMS.get(position);
     }
 
+    public static List<ScentInfo> getAllItems() {
+        return ITEMS;
+    }
+
     public static void sortItems() {
         Collections.sort(ITEMS);
     }

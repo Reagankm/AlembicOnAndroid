@@ -15,8 +15,6 @@
     <string name="dialog_title">Update Scents?</string>
     <string name="dialog_message_pt_1">Last updated on:\n</string>
     <string name="dialog_message_pt_2">\n\nDo you wish to update scents now?</string>
-
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="scent_query_dialog">Fetching scents...</string>
     <string name="title_activity_scent_list_container">ScentListContainerActivity</string>
 </resources>

@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -122,7 +121,7 @@ public class DirectoryActivity extends FragmentActivity {
 
             if(v == null)
             {
-                v = inflater.inflate(R.layout.directory_item, viewGroup, false);
+                v = inflater.inflate(R.layout.item_directory, viewGroup, false);
                 v.setTag(R.id.picture, v.findViewById(R.id.picture));
             }
 

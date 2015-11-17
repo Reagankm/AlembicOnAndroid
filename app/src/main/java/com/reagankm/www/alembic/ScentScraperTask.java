@@ -80,6 +80,7 @@ public class ScentScraperTask extends AsyncTask<String, Integer, String> {
         //dialog = new ProgressDialog(theContext);
     }
 
+
     protected void onPreExecute() {
         //dialog.setMessage("Searching for new scents...");
         //dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);

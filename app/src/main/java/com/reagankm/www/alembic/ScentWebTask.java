@@ -28,53 +28,54 @@ import java.util.List;
 public class ScentWebTask extends AsyncTask<String, Void, String> {
 
     private static final String TAG = "ScentWebTaskTag";
-    BufferedReader in;
+//    BufferedReader in;
 
 
     @Override
     protected String doInBackground(String...urls) {
         Log.d(TAG, "doInBackground");
         // params comes from the execute() call: params[0] is the url.
-        try {
-            return downloadUrl(urls[0]);
-        } catch (IOException e) {
-            return "Unable to retrieve web page. URL may be invalid.";
-        }
+//        try {
+//            return downloadUrl(urls[0]);
+//        } catch (IOException e) {
+//            return "Unable to retrieve web page. URL may be invalid.";
+//        }
+        return null;
     }
 
     void getData(StringBuilder sb, InputStream inStream) {
         Log.d(TAG, "getData");
-        try {
-
-            BufferedReader buff = new BufferedReader(new InputStreamReader(inStream));
-
-            String line = buff.readLine();
-            Log.d(TAG, "getData, Got line: " + line);
-            //while (line != null) {
-            try {
-                JSONArray jsonArray = new JSONArray(line);
-                Log.d(TAG, "getData, Converted line to JSON array");
-
-                for (int i=0; i<jsonArray.length(); i++) {
-                    JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-                    String id = (String) jsonObject.get("id");
-
-                    String name = (String) jsonObject.get("name");
-                    Log.d(TAG, "getData, id: " + id + ", name: " + name);
-                    Scent.ITEMS.add(new ScentInfo(id, name));
-
-                }
-
-
-
-                //sb.append(line);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            //}
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//
+//            BufferedReader buff = new BufferedReader(new InputStreamReader(inStream));
+//
+//            String line = buff.readLine();
+//            Log.d(TAG, "getData, Got line: " + line);
+//            //while (line != null) {
+//            try {
+//                JSONArray jsonArray = new JSONArray(line);
+//                Log.d(TAG, "getData, Converted line to JSON array");
+//
+//                for (int i=0; i<jsonArray.length(); i++) {
+//                    JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+//                    String id = (String) jsonObject.get("id");
+//
+//                    String name = (String) jsonObject.get("name");
+//                    Log.d(TAG, "getData, id: " + id + ", name: " + name);
+//                    Scent.ITEMS.add(new ScentInfo(id, name));
+//
+//                }
+//
+//
+//
+//                //sb.append(line);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            //}
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     // Given a URL, establishes an HttpUrlConnection and retrieves
@@ -84,47 +85,47 @@ public class ScentWebTask extends AsyncTask<String, Void, String> {
 
         Log.d(TAG, "downloadUrl");
 
-
-        try {
-            URL url = new URL(myurl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000 /* milliseconds */);
-            conn.setConnectTimeout(15000 /* milliseconds */);
-            conn.setRequestMethod("GET");
-            conn.setDoInput(true);
-            // Starts the query
-            conn.connect();
-            int response = conn.getResponseCode();
-            Log.d(TAG, "The connection response is: " + response);
-
-            in = new BufferedReader(
-                    new InputStreamReader ( conn.getInputStream() )
-            );
-
-
-            // Convert the InputStream into a string
-
-            //initiate strings to hold response data
-            String inputLine;
-            StringBuilder sb = new StringBuilder();;
-            //read the InputStream with the BufferedReader line by line and add each line to responseData
-            while ( ( inputLine = in.readLine() ) != null ){
-                sb.append(inputLine);
-            }
-            Log.d(TAG, "The fetched content is: " + sb.toString());
-            return sb.toString();
-
-            // Makes sure that the InputStream is closed after the app is
-            // finished using it.
-
-        } catch(Exception e ) {
-            Log.d(TAG, "Something happened" + e.getMessage());
-        }
-        finally {
-            if (in != null) {
-                in.close();
-            }
-        }
+//
+//        try {
+//            URL url = new URL(myurl);
+//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//            conn.setReadTimeout(10000 /* milliseconds */);
+//            conn.setConnectTimeout(15000 /* milliseconds */);
+//            conn.setRequestMethod("GET");
+//            conn.setDoInput(true);
+//            // Starts the query
+//            conn.connect();
+//            int response = conn.getResponseCode();
+//            Log.d(TAG, "The connection response is: " + response);
+//
+//            in = new BufferedReader(
+//                    new InputStreamReader ( conn.getInputStream() )
+//            );
+//
+//
+//            // Convert the InputStream into a string
+//
+//            //initiate strings to hold response data
+//            String inputLine;
+//            StringBuilder sb = new StringBuilder();;
+//            //read the InputStream with the BufferedReader line by line and add each line to responseData
+//            while ( ( inputLine = in.readLine() ) != null ){
+//                sb.append(inputLine);
+//            }
+//            Log.d(TAG, "The fetched content is: " + sb.toString());
+//            return sb.toString();
+//
+//            // Makes sure that the InputStream is closed after the app is
+//            // finished using it.
+//
+//        } catch(Exception e ) {
+//            Log.d(TAG, "Something happened" + e.getMessage());
+//        }
+//        finally {
+//            if (in != null) {
+//                in.close();
+//            }
+//        }
         return null;
     }
 
