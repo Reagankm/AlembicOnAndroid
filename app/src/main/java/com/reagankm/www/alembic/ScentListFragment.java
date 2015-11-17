@@ -83,7 +83,7 @@ public class ScentListFragment extends ListFragment {
                 c.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            
+
             Scent.ITEMS.clear();
             new ScentWebTask().execute(url + "?letter=" + letter);
         } else {
@@ -144,6 +144,8 @@ public class ScentListFragment extends ListFragment {
             // Populate the data into the template view using the data object
             idView.setText(scent.id);
             nameView.setText(scent.name);
+            //nameView.setPadding(5, 5, 5, 5);
+            //nameView.setTextSize(12);
             // Return the completed view to render on screen
 
             return view;
