@@ -1,0 +1,64 @@
+package com.reagankm.www.alembic.fragment;
+
+
+import android.os.Bundle;
+import android.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.reagankm.www.alembic.R;
+import com.reagankm.www.alembic.activity.ScentListActivity;
+import com.reagankm.www.alembic.model.LocalDB;
+import com.reagankm.www.alembic.model.Scent;
+import com.reagankm.www.alembic.model.ScentInfo;
+import com.reagankm.www.alembic.webtask.ScentQueryTask;
+
+import java.util.List;
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class ViewRatingsFragment extends AbstractListFragment {
+
+    private static final String TAG = "ViewRatingsFragmentTag";
+    LocalDB db;
+
+
+
+    public ViewRatingsFragment() {
+        // Required empty public constructor
+    }
+
+
+    //Get the list of rated scents
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        db = new LocalDB(getContext());
+        int count = db.getCount();
+
+        if (count == 0) {
+            //display message telling user they haven't rated anything
+            //TODO
+        } else {
+            List<ScentInfo> allRatings = db.getRatings();
+            if (allRatings != null && allRatings.size() > 0) {
+                Scent.setAllItems(db.getRatings());
+            } else {
+                Log.e(TAG, "onStart, count = " + count + " but db.getRatings() returned null" +
+                        " or empty list: " + allRatings);
+            }
+
+        }
+
+    }
+
+
+
+
+}

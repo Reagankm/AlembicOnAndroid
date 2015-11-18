@@ -29,6 +29,17 @@ public class Scent {
         ITEM_MAP.put(item.getId(), item);
     }
 
+    public static void setAllItems(List<ScentInfo> newList) {
+        ITEMS.clear();
+        ITEM_MAP.clear();
+
+        for (ScentInfo s : newList) {
+            addItem(s);
+        }
+
+        Collections.sort(ITEMS);
+    }
+
     public static ScentInfo getItem(int position) {
         return ITEMS.get(position);
     }

@@ -3,9 +3,13 @@ package com.reagankm.www.alembic.model;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by reagan on 11/17/15.
@@ -19,13 +23,13 @@ public class LocalDB {
     public static final int DB_VERSION = 1;
     public static final String DB_NAME = "LocalScentInfo.db";
 
-    private LocalDBHelper mUserInfoDBHelper;
+
     private SQLiteDatabase mSQLiteDatabase;
 
     public LocalDB(Context context) {
-        mUserInfoDBHelper = new LocalDBHelper(
+        LocalDBHelper dbHelper = new LocalDBHelper(
                 context, DB_NAME, null, DB_VERSION);
-        mSQLiteDatabase = mUserInfoDBHelper.getWritableDatabase();
+        mSQLiteDatabase = dbHelper.getWritableDatabase();
     }
 
     public boolean insertScent(String id, String name, float rating) {
@@ -41,6 +45,49 @@ public class LocalDB {
         return rowId != -1;
     }
 
+    //Returns the number of rated scents
+    public int getCount() {
+        Long result = DatabaseUtils.queryNumEntries(mSQLiteDatabase, TABLE_NAME);
+        return result.intValue();
+    }
+
+    //Gets details of all rated scents
+    public List<ScentInfo> getRatings() {
+
+        List<ScentInfo> result = new ArrayList<ScentInfo>();
+
+        String[] columns = { "id", "name", "rating" };
+
+
+        Cursor c = mSQLiteDatabase.query(
+                TABLE_NAME,  // The table to query
+                columns, // The columns to return
+                null, // The WHERE clause
+                null, // The values for the WHERE clause
+                null, // don't group the rows
+                null, // don't filter by row groups
+                null,  // The sort order
+                null // The row limit
+        );
+
+
+        c.moveToFirst();
+        for (int i = 0; i < c.getCount(); i++) {
+            String id = c.getString(0);
+            String name = c.getString(1);
+            float rating = Float.valueOf(c.getString(2));
+
+            ScentInfo scent = new ScentInfo(id, name, rating);
+            result.add(scent);
+            c.moveToNext();
+        }
+
+
+        return result;
+
+    }
+
+    //Gets the rating of a particular scent
     public float getRating(String id) {
 
         String[] columns = { "rating" };
@@ -73,15 +120,6 @@ public class LocalDB {
             result = c.getFloat(0);
         }
 
-//        //List<UserInfo> list = new ArrayList<UserInfo>();
-//        for (int i=0; i<c.getCount(); i++) {
-//            if (result != -1) {
-//                Log.e(TAG, "Multiple results returned. Previous result = " + result);
-//            }
-//            result = c.getFloat(0);
-//
-//            c.moveToNext();
-//        }
 
         return result;
     }

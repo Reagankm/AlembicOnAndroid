@@ -49,6 +49,8 @@
         </activity>
         <activity android:name=".activity.ScentActivity" >
         </activity>
+        <activity android:name=".activity.ViewRatingsActivity" >
+        </activity>
     </application>
 
 </manifest>

@@ -9,14 +9,15 @@ package com.reagankm.www.alembic.model;
 public class ScentInfo implements Comparable {
     private String id;
     private String name;
-    private int rating;
+    private float rating;
 
     public ScentInfo(String id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public ScentInfo(String id, String name, int rating) {
+
+    public ScentInfo(String id, String name, float rating) {
         this.id = id;
         this.name = name;
         this.rating = rating;
@@ -44,11 +45,11 @@ public class ScentInfo implements Comparable {
         return name;
     }
 
-    public int getRating() {
+    public float getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 
