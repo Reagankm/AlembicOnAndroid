@@ -1,4 +1,4 @@
-package com.reagankm.www.alembic;
+package com.reagankm.www.alembic.activity;
 
 import android.content.Intent;
 import android.os.Handler;
@@ -9,6 +9,8 @@ import android.util.Log;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.FacebookSdk;
+import com.reagankm.www.alembic.webtask.LastUpdatedTask;
+import com.reagankm.www.alembic.R;
 
 
 /**

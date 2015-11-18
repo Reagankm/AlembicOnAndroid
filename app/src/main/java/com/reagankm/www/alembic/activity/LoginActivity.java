@@ -1,4 +1,4 @@
-package com.reagankm.www.alembic;
+package com.reagankm.www.alembic.activity;
 
 
 import android.content.Intent;
@@ -18,6 +18,7 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.reagankm.www.alembic.R;
 
 import java.util.Arrays;
 

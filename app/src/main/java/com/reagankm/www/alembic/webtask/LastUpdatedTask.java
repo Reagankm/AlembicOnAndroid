@@ -1,4 +1,4 @@
-package com.reagankm.www.alembic;
+package com.reagankm.www.alembic.webtask;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import com.reagankm.www.alembic.R;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

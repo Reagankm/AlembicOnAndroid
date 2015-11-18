@@ -4,7 +4,7 @@
               android:layout_height="match_parent"
               android:orientation="vertical"
               android:gravity="center"
-              tools:context="com.reagankm.www.alembic.ScentFragment">
+              tools:context="com.reagankm.www.alembic.fragment.ScentFragment">
 
     <TextView
         android:layout_width="match_parent"

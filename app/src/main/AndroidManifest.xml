@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".SplashActivity"
+            android:name=".activity.SplashActivity"
             android:theme="@style/SplashTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,23 +31,23 @@
             android:value="@string/app_id" />
 
         <activity
-            android:name=".HubActivity"
+            android:name=".activity.HubActivity"
             android:launchMode="singleTop" >
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".activity.LoginActivity"
             android:launchMode="singleTop" >
         </activity>
         <activity android:name=".RateScentsActivity" >
         </activity>
         <activity
-            android:name=".ScentListActivity"
+            android:name=".activity.ScentListActivity"
             android:label="@string/title_activity_scent_list_container"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
-        <activity android:name=".DirectoryActivity" >
+        <activity android:name=".activity.DirectoryActivity" >
         </activity>
-        <activity android:name=".ScentActivity" >
+        <activity android:name=".activity.ScentActivity" >
         </activity>
     </application>
 

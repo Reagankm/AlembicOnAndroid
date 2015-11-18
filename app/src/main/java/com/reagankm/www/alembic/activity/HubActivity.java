@@ -1,4 +1,4 @@
-package com.reagankm.www.alembic;
+package com.reagankm.www.alembic.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,6 +21,9 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.reagankm.www.alembic.R;
+import com.reagankm.www.alembic.webtask.ScentScraperTask;
+import com.reagankm.www.alembic.fragment.UpdateDialogFragment;
 
 /**
  * Displays the main hub of the app with navigation buttons to

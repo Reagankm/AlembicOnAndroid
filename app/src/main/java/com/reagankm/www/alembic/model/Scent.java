@@ -26,7 +26,7 @@ public class Scent {
 
     public static void addItem(ScentInfo item) {
         ITEMS.add(item);
-        ITEM_MAP.put(item.id, item);
+        ITEM_MAP.put(item.getId(), item);
     }
 
     public static ScentInfo getItem(int position) {

@@ -1,4 +1,4 @@
-package com.reagankm.www.alembic;
+package com.reagankm.www.alembic.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+
+import com.reagankm.www.alembic.R;
+import com.reagankm.www.alembic.fragment.ScentListFragment;
 
 public class ScentListActivity extends FragmentActivity {
 

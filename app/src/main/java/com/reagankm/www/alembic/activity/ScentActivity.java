@@ -1,4 +1,4 @@
-package com.reagankm.www.alembic;
+package com.reagankm.www.alembic.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.reagankm.www.alembic.R;
+import com.reagankm.www.alembic.fragment.ScentFragment;
 import com.reagankm.www.alembic.model.ScentInfo;
 
 public class ScentActivity extends AppCompatActivity {
@@ -60,6 +62,7 @@ public class ScentActivity extends AppCompatActivity {
 
     }
 
+
     public static String getNameKey() {
         return SCENT_NAME_SELECTED;
     }
@@ -70,10 +73,10 @@ public class ScentActivity extends AppCompatActivity {
 
     public static Intent createIntent(Context packageContext, ScentInfo scent) {
         Intent i = new Intent(packageContext, ScentActivity.class);
-        i.putExtra(SCENT_ID_SELECTED, scent.id);
-        i.putExtra(SCENT_NAME_SELECTED, scent.name);
-        Log.d(TAG, "createIntent with ScentInfo object name " + scent.name
-                + ", id " + scent.id);
+        i.putExtra(SCENT_ID_SELECTED, scent.getId());
+        i.putExtra(SCENT_NAME_SELECTED, scent.getName());
+        Log.d(TAG, "createIntent with ScentInfo object name " + scent.getName()
+                + ", id " + scent.getId());
         return i;
     }
 

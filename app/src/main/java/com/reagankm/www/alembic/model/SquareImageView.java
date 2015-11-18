@@ -1,4 +1,4 @@
-package com.reagankm.www.alembic;
+package com.reagankm.www.alembic.model;
 
 import android.content.Context;
 import android.util.AttributeSet;

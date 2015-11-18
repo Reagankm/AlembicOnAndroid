@@ -1,4 +1,4 @@
-package com.reagankm.www.alembic;
+package com.reagankm.www.alembic.fragment;
 
 
 import android.app.Activity;
@@ -10,6 +10,8 @@ import android.support.v4.app.DialogFragment;
 
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+
+import com.reagankm.www.alembic.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

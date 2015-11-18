@@ -1,4 +1,4 @@
-package com.reagankm.www.alembic;
+package com.reagankm.www.alembic.webtask;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.reagankm.www.alembic.R;
 
 import org.json.JSONObject;
 import org.jsoup.Jsoup;

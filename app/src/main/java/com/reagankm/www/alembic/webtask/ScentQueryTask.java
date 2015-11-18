@@ -1,4 +1,4 @@
-package com.reagankm.www.alembic;
+package com.reagankm.www.alembic.webtask;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -6,16 +6,10 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import com.reagankm.www.alembic.R;
+import com.reagankm.www.alembic.fragment.ScentListFragment;
 import com.reagankm.www.alembic.model.Scent;
 import com.reagankm.www.alembic.model.ScentInfo;
 
@@ -27,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 
 /**
  * Created by reagan on 11/16/15.
@@ -58,7 +51,7 @@ public class ScentQueryTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPreExecute() {
-        dialog.setMessage("@string.scent_query_dialog");
+        dialog.setMessage(theContext.getResources().getString(R.string.scent_query_dialog));
         dialog.show();
     }
 
