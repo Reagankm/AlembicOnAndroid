@@ -72,6 +72,8 @@ public class ScentListFragment extends AbstractListFragment {
         return thisView;
     }
 
+
+
     //Get the list of scents starting with the chosen letter
     @Override
     public void onStart() {
@@ -80,6 +82,15 @@ public class ScentListFragment extends AbstractListFragment {
         new ScentQueryTask(getContext(), this).execute(letter);
     }
 
+    @Override
+    public RecyclerView fetchScentListRecyclerView() {
+        return (RecyclerView) thisView.findViewById(R.id.scent_recycler_view);
+    }
+
+    @Override
+    public View inflateView(LayoutInflater inflater, ViewGroup container) {
+        return inflater.inflate(R.layout.fragment_scent_list, container, false);
+    }
 
 
 }

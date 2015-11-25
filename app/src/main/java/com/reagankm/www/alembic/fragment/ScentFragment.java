@@ -82,8 +82,16 @@ public class ScentFragment extends Fragment {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 //Save or update the rating
-                boolean result = localDB.insertScent(id, name, rating);
-                Log.d(TAG, "onRatingChanged insertScent result = " + result);
+                if (rating == 0) {
+                    //Clear item from DB if it exists
+                    boolean result = localDB.removeScent(id);
+                    Log.d(TAG, "onRatingChanged deleteScent result = " + result);
+                } else {
+                    boolean result = localDB.insertScent(id, name, rating);
+                    Log.d(TAG, "onRatingChanged insertScent result = " + result);
+                }
+
+
             }
         });
 

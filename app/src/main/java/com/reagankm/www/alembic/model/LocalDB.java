@@ -33,6 +33,8 @@ public class LocalDB {
     }
 
     public boolean insertScent(String id, String name, float rating) {
+
+
         ContentValues contentValues = new ContentValues();
         contentValues.put("id", id);
         contentValues.put("name", name);
@@ -43,6 +45,27 @@ public class LocalDB {
         long rowId = mSQLiteDatabase.insertWithOnConflict(TABLE_NAME, null, contentValues,
                 SQLiteDatabase.CONFLICT_REPLACE);
         return rowId != -1;
+    }
+
+    public boolean removeScent(String id) {
+        boolean result = false;
+
+        String where = "id = ?";
+        String[] whereParams = { id };
+
+        int rowsDeleted = mSQLiteDatabase.delete(TABLE_NAME, where, whereParams);
+
+        if (rowsDeleted == 1) {
+            result = true;
+            Log.d(TAG, "removeScent removed one row with id " + id);
+        } else if (rowsDeleted > 1) {
+            result = true;
+            Log.e(TAG, "removeScent with id " + id + " removed " + rowsDeleted + " rows!");
+        } else {
+            Log.d(TAG, "removeScent removed zero rows with id " + id);
+        }
+
+        return result;
     }
 
     //Returns the number of rated scents

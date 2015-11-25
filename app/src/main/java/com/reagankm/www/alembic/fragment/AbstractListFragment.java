@@ -36,7 +36,7 @@ public abstract class AbstractListFragment extends Fragment {
 
     private RecyclerView scentListRecyclerView;
 
-    private ScentAdapter scentAdapter;
+
 
 
     public AbstractListFragment() {
@@ -56,10 +56,10 @@ public abstract class AbstractListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        thisView = inflater.inflate(R.layout.fragment_abstract_list, container, false);
+        thisView = inflateView(inflater, container);
 
-        scentListRecyclerView
-                = (RecyclerView) thisView.findViewById(R.id.scent_recycler_view);
+        scentListRecyclerView = fetchScentListRecyclerView();
+               // = (RecyclerView) thisView.findViewById(R.id.abstract_recycler_view);
         scentListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
 
@@ -67,12 +67,19 @@ public abstract class AbstractListFragment extends Fragment {
         return thisView;
     }
 
+    public abstract View inflateView(LayoutInflater inflater, ViewGroup container);
+
     public void updateUI() {
         List<ScentInfo> scents = Scent.getAllItems();
-        scentAdapter = new ScentAdapter(scents);
+
+        ScentAdapter scentAdapter = new ScentAdapter(scents);
         scentListRecyclerView.setAdapter(scentAdapter);
 
     }
+
+    public abstract RecyclerView fetchScentListRecyclerView();
+
+
 
 }
 

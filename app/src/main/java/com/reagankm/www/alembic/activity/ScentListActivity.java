@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 
 import com.reagankm.www.alembic.R;
 import com.reagankm.www.alembic.fragment.ScentListFragment;
+import com.reagankm.www.alembic.fragment.ViewRatingsFragment;
 
 public class ScentListActivity extends FragmentActivity {
 
