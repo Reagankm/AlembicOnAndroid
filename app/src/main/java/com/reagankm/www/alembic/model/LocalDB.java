@@ -18,19 +18,63 @@ public class LocalDB {
 
     private static final String TAG = "LocalDBTag";
 
-    private static final String TABLE_NAME = "Scent";
+    private static final String SCENT_TABLE_NAME = "Scent";
+    private static final String INGREDIENT_TABLE_NAME = "Ingredient";
 
     public static final int DB_VERSION = 1;
     public static final String DB_NAME = "LocalScentInfo.db";
 
 
-    private SQLiteDatabase mSQLiteDatabase;
+    private static SQLiteDatabase mSQLiteDatabase;
 
-    public LocalDB(Context context) {
+    private static LocalDB theLocalDB;
+
+
+
+    private LocalDB(Context context) {
         LocalDBHelper dbHelper = new LocalDBHelper(
                 context, DB_NAME, null, DB_VERSION);
         mSQLiteDatabase = dbHelper.getWritableDatabase();
+
+        //Allow concurrent reads/writes from multiple threads
+        mSQLiteDatabase.enableWriteAheadLogging();
     }
+
+    public static LocalDB getInstance(Context c) {
+
+        if (theLocalDB == null) {
+            theLocalDB = new LocalDB(c);
+        }
+
+        return theLocalDB;
+
+    }
+
+    public static LocalDB getInstance() {
+        if (theLocalDB != null) {
+            return theLocalDB;
+        } else {
+            throw new IllegalStateException("theLocalDB has not been initialized with a context");
+        }
+    }
+
+    public void insertIngredient(String ingredName, String scentId) {
+
+        ContentValues cv = new ContentValues();
+        cv.put("id", ingredName + scentId);
+        cv.put("name", ingredName);
+        cv.put("scent_id", scentId);
+
+
+        //This should insert the row if it doesn't exist or, if it already does,
+        //do nothing
+        mSQLiteDatabase.insertWithOnConflict(INGREDIENT_TABLE_NAME, null, cv,
+                SQLiteDatabase.CONFLICT_IGNORE);
+
+
+
+    }
+
 
     public boolean insertScent(String id, String name, float rating) {
 
@@ -42,8 +86,11 @@ public class LocalDB {
 
         //This should insert the row if it doesn't exist or, if it already does, replace
         //it with the current values (ie, update the rating for that scent)
-        long rowId = mSQLiteDatabase.insertWithOnConflict(TABLE_NAME, null, contentValues,
+        long rowId = mSQLiteDatabase.insertWithOnConflict(SCENT_TABLE_NAME, null, contentValues,
                 SQLiteDatabase.CONFLICT_REPLACE);
+
+
+
         return rowId != -1;
     }
 
@@ -53,14 +100,18 @@ public class LocalDB {
         String where = "id = ?";
         String[] whereParams = { id };
 
-        int rowsDeleted = mSQLiteDatabase.delete(TABLE_NAME, where, whereParams);
+        int scentRowsDeleted = mSQLiteDatabase.delete(SCENT_TABLE_NAME, where, whereParams);
 
-        if (rowsDeleted == 1) {
+        where = "scent_id = ?";
+        int ingredRowsDeleted = mSQLiteDatabase.delete(INGREDIENT_TABLE_NAME, where, whereParams);
+
+        if (scentRowsDeleted == 1) {
             result = true;
-            Log.d(TAG, "removeScent removed one row with id " + id);
-        } else if (rowsDeleted > 1) {
+            Log.d(TAG, "removeScent removed one scent with id " + id + ", " + ingredRowsDeleted
+                    + " ingredient rows");
+        } else if (scentRowsDeleted > 1) {
             result = true;
-            Log.e(TAG, "removeScent with id " + id + " removed " + rowsDeleted + " rows!");
+            Log.e(TAG, "removeScent with id " + id + " removed " + scentRowsDeleted + " rows!");
         } else {
             Log.d(TAG, "removeScent removed zero rows with id " + id);
         }
@@ -70,20 +121,47 @@ public class LocalDB {
 
     //Returns the number of rated scents
     public int getCount() {
-        Long result = DatabaseUtils.queryNumEntries(mSQLiteDatabase, TABLE_NAME);
+        Long result = DatabaseUtils.queryNumEntries(mSQLiteDatabase, SCENT_TABLE_NAME);
         return result.intValue();
+    }
+
+    public List<String> getIngredients(String scentId) {
+        List<String> result = new ArrayList<>();
+
+        String[] columns = { "name" };
+        String where = "scent_id = ?";
+        String[] whereParams = { scentId };
+        Cursor c = mSQLiteDatabase.query(
+                INGREDIENT_TABLE_NAME,  // The table to query
+                columns, // The columns to return
+                where, // The WHERE clause
+                whereParams, // The values for the WHERE clause
+                null, // don't group the rows
+                null, // don't filter by row groups
+                null,  // The sort order
+                null // The row limit
+        );
+
+        c.moveToFirst();
+        for (int i = 0; i < c.getCount(); i++) {
+            result.add(c.getString(0));
+            c.moveToNext();
+        }
+
+        return result;
+
     }
 
     //Gets details of all rated scents
     public List<ScentInfo> getRatings() {
 
-        List<ScentInfo> result = new ArrayList<ScentInfo>();
+        List<ScentInfo> result = new ArrayList<>();
 
         String[] columns = { "id", "name", "rating" };
 
 
         Cursor c = mSQLiteDatabase.query(
-                TABLE_NAME,  // The table to query
+                SCENT_TABLE_NAME,  // The table to query
                 columns, // The columns to return
                 null, // The WHERE clause
                 null, // The values for the WHERE clause
@@ -117,7 +195,7 @@ public class LocalDB {
         String where = "id = ?";
         String[] whereParams = { id };
         Cursor c = mSQLiteDatabase.query(
-                TABLE_NAME,  // The table to query
+                SCENT_TABLE_NAME,  // The table to query
                 columns, // The columns to return
                 where, // The WHERE clause
                 whereParams, // The values for the WHERE clause
@@ -156,16 +234,21 @@ public class LocalDB {
 
     private class LocalDBHelper extends SQLiteOpenHelper {
 
-        //private static final String CREATE_USER_SQL =
-        //"CREATE TABLE IF NOT EXISTS User (email TEXT PRIMARY KEY, pwd TEXT)";
 
         private static final String CREATE_SCENT_TABLE =
-                "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
+                "CREATE TABLE IF NOT EXISTS " + SCENT_TABLE_NAME + " (" +
                         "id TEXT PRIMARY KEY NOT NULL, " +
                         "name TEXT NOT NULL, " +
                         "rating REAL NOT NULL)";
 
-        private static final String DROP_USER_SQL = "DROP TABLE IF EXISTS " + TABLE_NAME;
+        private static final String CREATE_INGREDIENT_TABLE =
+                "CREATE TABLE IF NOT EXISTS " + INGREDIENT_TABLE_NAME + " (" +
+                        "id TEXT PRIMARY KEY NOT NULL, " +
+                        "name TEXT NOT NULL, " +
+                        "scent_id TEXT NOT NULL)";
+
+        private static final String DROP_SCENT = "DROP TABLE IF EXISTS " + SCENT_TABLE_NAME;
+        private static final String DROP_INGREDIENT = "DROP TABLE IF EXISTS " + INGREDIENT_TABLE_NAME;
 
         public LocalDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory,
                              int version) {
@@ -175,13 +258,15 @@ public class LocalDB {
         @Override
         public void onCreate(SQLiteDatabase sqLiteDatabase) {
             sqLiteDatabase.execSQL(CREATE_SCENT_TABLE);
+            sqLiteDatabase.execSQL(CREATE_INGREDIENT_TABLE);
         }
 
 
         @Override
         public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
-            sqLiteDatabase.execSQL(DROP_USER_SQL);
+            sqLiteDatabase.execSQL(DROP_SCENT);
+            sqLiteDatabase.execSQL(DROP_INGREDIENT);
 
             onCreate(sqLiteDatabase);
         }

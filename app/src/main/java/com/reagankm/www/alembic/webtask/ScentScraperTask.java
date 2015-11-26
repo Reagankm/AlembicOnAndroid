@@ -117,42 +117,42 @@ public class ScentScraperTask extends AsyncTask<String, Integer, String> {
             //productCount += addScentsByIngredient(doc);
 
             //Examine all scents in the product list
-            Elements productHeader = doc.getElementsByClass("products");
-            for (Element el : productHeader){
-                //Log.d(TAG, "Parsing an element within productHeader");
-                Element productList = el.nextElementSibling();
-                Elements products = productList.getElementsByTag("a");
-
-                //Send the name and unique id of each product to be passed into the
-                //database
-                for (Element p : products){
-                    String name = p.attr("title");
-
-                    //The id is the unique part of the product's URL
-                    //(To differentiate between scents with the same name)
-                    String id = p.attr("href");
-                    id = id.substring(STORE_PATH.length());
-                    Log.d(TAG, "Before Encoding: Title = " + name + ", id = " + id);
-
-                    //Encode name and id so they're safe to pass as part of a web address
-                    name = URLEncoder.encode(name, "UTF-8");
-                    id = URLEncoder.encode(id, "UTF-8");
-                    //Log.d(TAG, "After Encoding: Title = " + name + ", id = " + id);
-
-                    //Send the product to be added to the database via the PHP script
-                    if (id.length() > 0 && name.length() > 0) {
-
-                        String requestURL = addScentPhpUrl + "?id=" + id + "&name=" + name;
-                        String phpResult = downloadUrl(requestURL);
-
-                        //Update the progress dialog by 1 scent
-                        publishProgress(1);
-                        if (scentAddedSuccessfully(phpResult)) {
-                            productCount++;
-                        }
-                    }
-                }
-            }
+//            Elements productHeader = doc.getElementsByClass("products");
+//            for (Element el : productHeader){
+//                //Log.d(TAG, "Parsing an element within productHeader");
+//                Element productList = el.nextElementSibling();
+//                Elements products = productList.getElementsByTag("a");
+//
+//                //Send the name and unique id of each product to be passed into the
+//                //database
+//                for (Element p : products){
+//                    String name = p.attr("title");
+//
+//                    //The id is the unique part of the product's URL
+//                    //(To differentiate between scents with the same name)
+//                    String id = p.attr("href");
+//                    id = id.substring(STORE_PATH.length());
+//                    Log.d(TAG, "Before Encoding: Title = " + name + ", id = " + id);
+//
+//                    //Encode name and id so they're safe to pass as part of a web address
+//                    name = URLEncoder.encode(name, "UTF-8");
+//                    id = URLEncoder.encode(id, "UTF-8");
+//                    //Log.d(TAG, "After Encoding: Title = " + name + ", id = " + id);
+//
+//                    //Send the product to be added to the database via the PHP script
+//                    if (id.length() > 0 && name.length() > 0) {
+//
+//                        String requestURL = addScentPhpUrl + "?id=" + id + "&name=" + name;
+//                        String phpResult = downloadUrl(requestURL);
+//
+//                        //Update the progress dialog by 1 scent
+//                        publishProgress(1);
+//                        if (scentAddedSuccessfully(phpResult)) {
+//                            productCount++;
+//                        }
+//                    }
+//                }
+//            }
             //Examine all scents in the ingredients list
 
             //h2.topic + table selects the table under the topic header
@@ -168,8 +168,8 @@ public class ScentScraperTask extends AsyncTask<String, Integer, String> {
                     String path = e.attr("href");
                     String ingredientName = e.text();
 
-                    Log.d(TAG, path);
-                    Log.d(TAG, ingredientName);
+                    Log.d(TAG, "Path: " + path);
+                    Log.d(TAG, "Ingredient Name: " + ingredientName);
                     ingredientName = URLEncoder.encode(ingredientName, "UTF-8");
 
                     Document ingredientDoc = Jsoup.connect(path).timeout(0).maxBodySize(10*1024*1024).get();
@@ -183,30 +183,33 @@ public class ScentScraperTask extends AsyncTask<String, Integer, String> {
                             //Log.d(TAG, "Extracted links from h2s");
                             for (Element p : productList){
                                 //Add to scent list if it's not already there
-                                String name = p.text();
+                                String scent_name = p.text();
 
                                 //The id is the unique part of the product's URL
                                 //(To differentiate between scents with the same name)
                                 String scent_id = p.attr("href");
                                 scent_id = scent_id.substring(STORE_PATH.length());
-                                Log.d(TAG, "Before Encoding: Title = " + name + ", id = " + scent_id);
+                                //Log.d(TAG, "Before Encoding: Title = " + scent_name + ", id = " + scent_id);
 
-                                //Encode name and id so they're safe to pass as part of a web address
-                                name = URLEncoder.encode(name, "UTF-8");
-                                scent_id = URLEncoder.encode(scent_id, "UTF-8");
+
                                 //Log.d(TAG, "After Encoding: Title = " + name + ", id = " + scent_id);
 
                                 //Send the product to be added to the database via the PHP script
-                                if (scent_id.length() > 0 && name.length() > 0) {
+                                if (scent_id.length() > 0 && scent_name.length() > 0) {
+                                    //Encode name and id so they're safe to pass as part of a web address
+                                    scent_name = URLEncoder.encode(scent_name, "UTF-8");
+                                    scent_id = URLEncoder.encode(scent_id, "UTF-8");
 
                                     //Send data to Scent Name database
-                                    String requestURL = addScentPhpUrl + "?id=" + scent_id + "&name=" + name;
+                                    String requestURL = addScentPhpUrl + "?id=" + scent_id + "&name=" + scent_name;
                                     String scentResult = downloadUrl(requestURL);
+                                    Log.d(TAG, "Sending scent by ingredient " + ingredientName + ": " + scent_name + ", " + scent_id);
 
                                     //Send data to ingredient database
                                     requestURL = addIngredientPhpUrl + "?id=" + ingredientName + scent_id
-                                            + "&ingredient=" + ingredientName + "&scent_id=" + scent_id;
+                                            + "&name=" + ingredientName + "&scent_id=" + scent_id;
                                     String ingredientResult = downloadUrl(requestURL);
+
 
                                     //Update the progress dialog by 1 scent
                                     publishProgress(1);

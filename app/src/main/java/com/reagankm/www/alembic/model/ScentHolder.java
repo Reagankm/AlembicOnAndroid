@@ -33,7 +33,7 @@ public class ScentHolder extends AbstractScentHolder {
         Log.d(TAG, "bindScent with id " + scent.getId() + ", name " + scent.getName());
         getNameTextView().setText(scent.getName());
 
-        LocalDB db = new LocalDB(theContext);
+        LocalDB db = LocalDB.getInstance(theContext);
 
         float rating = db.getRating(scent.getId());
         RatingBar rb = getRatingBar();

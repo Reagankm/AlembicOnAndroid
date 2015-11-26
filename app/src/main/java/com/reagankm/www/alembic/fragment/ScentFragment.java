@@ -14,6 +14,9 @@ import android.widget.TextView;
 import com.reagankm.www.alembic.R;
 import com.reagankm.www.alembic.activity.ScentActivity;
 import com.reagankm.www.alembic.model.LocalDB;
+import com.reagankm.www.alembic.webtask.GetIngredientsTask;
+
+import java.util.List;
 
 
 /**
@@ -27,6 +30,7 @@ public class ScentFragment extends Fragment {
     private String id;
     private TextView nameView;
     private TextView idView;
+    private TextView ingredView;
 
     private View thisView;
 
@@ -50,7 +54,7 @@ public class ScentFragment extends Fragment {
             Log.d(TAG, "onCreate has no savedInstanceState");
         }
 
-        localDB = new LocalDB(getContext());
+        localDB = LocalDB.getInstance(getContext());
 
 
 
@@ -70,9 +74,21 @@ public class ScentFragment extends Fragment {
 
         nameView = (TextView) thisView.findViewById(R.id.scent_detail_name);
         idView = (TextView) thisView.findViewById(R.id.scent_detail_id);
+        ingredView = (TextView) thisView.findViewById(R.id.ingredient_textview);
 
         nameView.setText(name);
         idView.setText(id);
+
+        List<String> ingredList = localDB.getIngredients(id);
+        if (ingredList.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            for (String s : ingredList) {
+                sb.append(s + ", ");
+            }
+            sb.delete(sb.length() - 2, sb.length());
+            ingredView.setText(sb.toString());
+            ingredView.setVisibility(View.VISIBLE);
+        }
 
         //Set rating bar value and listener
         //Activity activity = (Activity) getContext();
@@ -86,9 +102,15 @@ public class ScentFragment extends Fragment {
                     //Clear item from DB if it exists
                     boolean result = localDB.removeScent(id);
                     Log.d(TAG, "onRatingChanged deleteScent result = " + result);
+
                 } else {
+                    //Update rating and store scent with rating in local DB
                     boolean result = localDB.insertScent(id, name, rating);
                     Log.d(TAG, "onRatingChanged insertScent result = " + result);
+
+                    //Store ingredients of scent in local DB
+                    new GetIngredientsTask(getContext()).execute(id);
+
                 }
 
 
@@ -107,7 +129,7 @@ public class ScentFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        localDB.closeDB();
+        //localDB.closeDB();
     }
 
 

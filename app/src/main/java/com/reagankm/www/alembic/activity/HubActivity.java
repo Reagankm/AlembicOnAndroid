@@ -163,12 +163,13 @@ public class HubActivity extends AppCompatActivity implements UpdateDialogFragme
             }
         });
 
-//        recommendButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent launch = new
-//            }
-//        });
+        recommendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent launchAgent = new Intent(HubActivity.this, RecommendationAgentActivity.class);
+                startActivity(launchAgent);
+            }
+        });
 
     }
 

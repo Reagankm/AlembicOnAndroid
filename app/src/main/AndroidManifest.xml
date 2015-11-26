@@ -1,55 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.reagankm.www.alembic" >
+<manifest package="com.reagankm.www.alembic"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".activity.SplashActivity"
-            android:theme="@style/SplashTheme" >
+            android:theme="@style/SplashTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/app_id" />
+            android:value="@string/app_id"/>
 
         <activity
             android:name=".activity.HubActivity"
-            android:launchMode="singleTop" >
+            android:launchMode="singleTop">
         </activity>
         <activity
             android:name=".activity.LoginActivity"
-            android:launchMode="singleTop" >
+            android:launchMode="singleTop">
         </activity>
-        <activity android:name=".RateScentsActivity" >
+        <activity android:name=".RateScentsActivity">
         </activity>
         <activity
             android:name=".activity.ScentListActivity"
             android:label="@string/title_activity_scent_list_container"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".activity.DirectoryActivity" >
+        <activity android:name=".activity.DirectoryActivity">
         </activity>
-        <activity android:name=".activity.ScentActivity" >
+        <activity android:name=".activity.ScentActivity">
         </activity>
-        <activity android:name=".activity.ViewRatingsActivity" >
+        <activity android:name=".activity.ViewRatingsActivity">
+        </activity>
+        <activity android:name=".activity.RecommendationAgentActivity">
         </activity>
     </application>
 

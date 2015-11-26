@@ -1,19 +1,24 @@
 package com.reagankm.www.alembic.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Created by reagan on 11/16/15.
  */
-/**
- * A dummy item representing a piece of content.
- */
+
 public class ScentInfo implements Comparable {
     private String id;
     private String name;
     private float rating;
+    private List<String> ingredientList;
+
 
     public ScentInfo(String id, String name) {
         this.id = id;
         this.name = name;
+        ingredientList = new ArrayList<>();
     }
 
 
@@ -21,6 +26,22 @@ public class ScentInfo implements Comparable {
         this.id = id;
         this.name = name;
         this.rating = rating;
+        ingredientList = new ArrayList<>();
+    }
+
+    public ScentInfo(String id, String name, float rating, List<String> ingreds) {
+        this.id = id;
+        this.name = name;
+        this.rating = rating;
+        ingredientList = new ArrayList<>(ingreds);
+    }
+
+    public void setIngredientList(List<String> ingreds) {
+        ingredientList = new ArrayList<>(ingreds);
+    }
+
+    public void addIngredient(String ingred) {
+        ingredientList.add(ingred);
     }
 
     public int compareTo(Object o){

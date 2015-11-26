@@ -52,7 +52,7 @@ public class ViewRatingsFragment extends AbstractListFragment {
     public void onStart() {
         super.onStart();
 
-        db = new LocalDB(getContext());
+        db = LocalDB.getInstance(getContext());
         int count = db.getCount();
 
         if (count == 0) {

@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.reagankm.www.alembic.R;
-import com.reagankm.www.alembic.fragment.ScentListFragment;
 import com.reagankm.www.alembic.fragment.ViewRatingsFragment;
 
 public class ViewRatingsActivity extends AppCompatActivity {
