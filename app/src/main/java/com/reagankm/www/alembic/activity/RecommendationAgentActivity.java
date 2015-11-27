@@ -36,6 +36,7 @@ public class RecommendationAgentActivity extends AppCompatActivity
     private LocalDB db;
     private ArrayBlockingQueue<ScentInfo> allRecommendations;
     private List<ScentInfo> allRated;
+    //private Button
     //Only want to show a small number of reccs at a time, but calculating these is
     //labor intensive so don't want to duplicate work/calls
     private static final int NUMBER_OF_SCENTS_TO_RECOMMEND = 10;
@@ -75,7 +76,7 @@ public class RecommendationAgentActivity extends AppCompatActivity
         //ScentInfo current = allScents.get(0);
 
         goodPairs = new HashMap<>();  //>= 4
-        badPairs = new HashMap<>(); //<= 2
+        //badPairs = new HashMap<>(); //<= 2
 
         int i;
         for (i = 0; i < allRated.size() && allRated.get(i).getRating() >= 4; i++ ) {
@@ -89,22 +90,29 @@ public class RecommendationAgentActivity extends AppCompatActivity
 
         }
         Log.d(TAG, "Loaded good pairs, goodPairs now has size " + goodPairs.size());
-        int j;
-        for (j = allRated.size() - 1; j >= 0 && allRated.get(j).getRating() <= 2; j--) {
-            ScentInfo current = allRated.get(j);
-            Log.d(TAG, "onCreate finding scentInfo with low ratings. Current "
-                    + current.getName() + " rated " + current.getRating());
-
-            loadIngredientPairs(current, badPairs);
-            Log.d(TAG, "onCreate after returning from loadIngredPairs, badPairs has size "
-                    + badPairs.size());
-        }
-        Log.d(TAG, "Loaded bad pairs, badPairs now has size " + badPairs.size());
+//        int j;
+//        for (j = allRated.size() - 1; j >= 0 && allRated.get(j).getRating() <= 2; j--) {
+//            ScentInfo current = allRated.get(j);
+//            Log.d(TAG, "onCreate finding scentInfo with low ratings. Current "
+//                    + current.getName() + " rated " + current.getRating());
+//
+//            loadIngredientPairs(current, badPairs);
+//            Log.d(TAG, "onCreate after returning from loadIngredPairs, badPairs has size "
+//                    + badPairs.size());
+//        }
+//        Log.d(TAG, "Loaded bad pairs, badPairs now has size " + badPairs.size());
         //TODO: load up a mediumPairs map if necessary using i and j as start/end indexes
 
         loadRecommendations();
 
+
+
+
         //TODO: Choose recommendation if user only has 3s
+
+    }
+
+    private void displayRecommendations() {
 
     }
 
@@ -127,21 +135,21 @@ public class RecommendationAgentActivity extends AppCompatActivity
 
         });
 
-        Set<Map.Entry<String, Integer>> badEntries = new TreeSet<>(new Comparator<Map.Entry<String, Integer>>() {
-
-            public int compare(Map.Entry<String, Integer> objA,
-                               Map.Entry<String, Integer> objB) {
-
-                int result = objB.getValue() - objA.getValue();
-                if (result == 0) {
-                    result = objA.getKey().compareTo(objB.getKey());
-                }
-                return result;
-            }
-
-
-        });
-
+//        Set<Map.Entry<String, Integer>> badEntries = new TreeSet<>(new Comparator<Map.Entry<String, Integer>>() {
+//
+//            public int compare(Map.Entry<String, Integer> objA,
+//                               Map.Entry<String, Integer> objB) {
+//
+//                int result = objB.getValue() - objA.getValue();
+//                if (result == 0) {
+//                    result = objA.getKey().compareTo(objB.getKey());
+//                }
+//                return result;
+//            }
+//
+//
+//        });
+//
 
         if (goodPairs.size() > 0) {
             for(Map.Entry<String, Integer> entry : goodPairs.entrySet()) {
@@ -153,18 +161,20 @@ public class RecommendationAgentActivity extends AppCompatActivity
 
 
         }
+//
+//        if (badPairs.size() > 0) {
+//            for (Map.Entry<String, Integer> entry : badPairs.entrySet()) {
+//                badEntries.add(entry);
+//
+//            }
+////            badEntries.addAll(badPairs.entrySet());
+//            Log.d(TAG, "Got sorted bad values into treeset with size " + badEntries.size());
+//
+//        }
 
-        if (badPairs.size() > 0) {
-            for (Map.Entry<String, Integer> entry : badPairs.entrySet()) {
-                badEntries.add(entry);
-
-            }
-//            badEntries.addAll(badPairs.entrySet());
-            Log.d(TAG, "Got sorted bad values into treeset with size " + badEntries.size());
-
-        }
-
-        if (goodEntries.size() > 0 && badEntries.size() > 0) {
+        if (goodEntries.size() > 0
+        //        && badEntries.size() > 0
+                ) {
 
             Iterator<Map.Entry<String, Integer>> goodIterator = goodEntries.iterator();
             while (goodIterator.hasNext()
@@ -177,45 +187,46 @@ public class RecommendationAgentActivity extends AppCompatActivity
                 String goodTwo = goodKey.substring(index + 1);
                 Log.d(TAG, "Good one: " + goodOne + ", goodTwo: " + goodTwo);
 
-                Iterator<Map.Entry<String, Integer>> badIterator = badEntries.iterator();
+//                Iterator<Map.Entry<String, Integer>> badIterator = badEntries.iterator();
+//
+//                while (badIterator.hasNext()
+//                        && allRecommendations.size() < NUMBER_OF_SCENTS_TO_RECOMMEND) {
+//
+//                    Map.Entry<String, Integer> badEntry = badIterator.next();
+//                    String badKey = badEntry.getKey();
+//                    Log.d(TAG, "badEntry key: " + badKey + ", value: " + badEntry.getValue());
+//                    index = badKey.indexOf('\'');
+//                    String badOne = badKey.substring(0, index);
+//                    String badTwo = badKey.substring(index + 1);
+//                    Log.d(TAG, "Bad one: " + badOne + ", badTwo: " + badTwo);
 
-                while (badIterator.hasNext()
-                        && allRecommendations.size() < NUMBER_OF_SCENTS_TO_RECOMMEND) {
+                String[] params = new String[2];
+                //new String[4];
+                try {
+                    params[0] = URLEncoder.encode(goodOne, "UTF-8");
+                    params[1] = URLEncoder.encode(goodTwo, "UTF-8");
+                    //params[2] = URLEncoder.encode(badOne, "UTF-8");
+                    //params[3] = URLEncoder.encode(badTwo, "UTF-8");
 
-                    Map.Entry<String, Integer> badEntry = badIterator.next();
-                    String badKey = badEntry.getKey();
-                    Log.d(TAG, "badEntry key: " + badKey + ", value: " + badEntry.getValue());
-                    index = badKey.indexOf('\'');
-                    String badOne = badKey.substring(0, index);
-                    String badTwo = badKey.substring(index + 1);
-                    Log.d(TAG, "Bad one: " + badOne + ", badTwo: " + badTwo);
-
-                    String[] params = new String[4];
-                    try {
-                        params[0] = URLEncoder.encode(goodOne, "UTF-8");
-                        params[1] = URLEncoder.encode(goodTwo, "UTF-8");
-                        params[2] = URLEncoder.encode(badOne, "UTF-8");
-                        params[3] = URLEncoder.encode(badTwo, "UTF-8");
-
-                        RecommendationQueryTask webtask = new RecommendationQueryTask(this);
-                        webtask.setQueryListener(this);
-                        webtask.execute(params);
-                    } catch (Exception e) {
-                        Log.e(TAG, "Exception in encoding: " + e);
-                    }
+                    RecommendationQueryTask webtask = new RecommendationQueryTask(this);
+                    webtask.setQueryListener(this);
+                    webtask.execute(params);
+                } catch (Exception e) {
+                    Log.e(TAG, "Exception in encoding: " + e);
                 }
-
             }
 
-            Log.d(TAG, "Finished searching for recommendations");
 
 
 
         } else {
-
-            //TODO: How to behave if there are not good and bad pairs to compare
-
+            //goodentries size <= 0
         }
+
+
+
+
+
     }
 
     private void loadIngredientPairs(ScentInfo scent, Map<String, Integer> pairMap) {
@@ -250,6 +261,7 @@ public class RecommendationAgentActivity extends AppCompatActivity
     //only add if scent is not rated
     @Override
     public void onCompletion(List<ScentInfo> results) {
+        Log.d(TAG, "onCompletion");
 
         if (allRecommendations.size() < NUMBER_OF_SCENTS_TO_RECOMMEND) {
 
@@ -263,6 +275,15 @@ public class RecommendationAgentActivity extends AppCompatActivity
                         alreadyRated = true;
                     }
                 }
+
+                Iterator<ScentInfo> itr = allRecommendations.iterator();
+
+                while (itr.hasNext()) {
+                    if (itr.next().equals(recommendation)) {
+                        alreadyRated = true;
+                    }
+                }
+
 
                 if (!alreadyRated) {
 

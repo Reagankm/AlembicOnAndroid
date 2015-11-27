@@ -65,7 +65,8 @@ public class RecommendationQueryTask extends AsyncTask<String, Void, String>{
                 Log.d(TAG, "Trying to process URL");
 
                 return downloadUrl(url + "?good1=" + params[0] + "&good2=" + params[1]
-                        + "&bad1=" + params[2] + "&bad2=" + params[3]);
+                       // + "&bad1=" + params[2] + "&bad2=" + params[3]
+                       );
             } catch (IOException e) {
                 return "Unable to retrieve web page. URL may be invalid.";
             }
@@ -134,7 +135,7 @@ public class RecommendationQueryTask extends AsyncTask<String, Void, String>{
         Log.d(TAG, "onPostExecute");
         // Parse JSON
         try {
-            List<ScentInfo> result = new ArrayList<ScentInfo>();
+            List<ScentInfo> result = new ArrayList<>();
 
 
             JSONArray jsonArray = new JSONArray(s);
@@ -152,6 +153,7 @@ public class RecommendationQueryTask extends AsyncTask<String, Void, String>{
 
             //Send results to listener activity
             if (listener != null) {
+                Log.d(TAG, "Sending results to the listener");
                 listener.onCompletion(result);
             }
 
