@@ -21,42 +21,39 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Fetches all scents that begin with the given first letter.
+ * Created by reagan on 11/26/15.
  */
-public class ScentQueryTask extends AsyncTask<String, Void, String> {
+public class RecommendationQueryTask extends AsyncTask<String, Void, String>{
 
-    private static final String TAG = "ScentQueryTaskTag";
+    private static final String TAG = "RecommendQueryTaskTag";
 
     private static final String
-            url = "http://cssgate.insttech.washington.edu/~reagankm/queryScents.php";
+            url = "http://cssgate.insttech.washington.edu/~reagankm/recommendationQuery.php";
 
     private BufferedReader in;
 
-    private ProgressDialog dialog;
-
-    private final ScentListFragment theFragment;
+    private RecommendationQueryListener listener;
 
     /** The calling Activity's context. */
     private final Context theContext;
 
-    public ScentQueryTask(Context c, ScentListFragment f) {
+    public RecommendationQueryTask(Context c) {
         super();
         theContext = c;
-        theFragment = f;
-        Activity activity = (Activity) c;
-        dialog = new ProgressDialog(activity);
     }
 
-    @Override
-    protected void onPreExecute() {
-        dialog.setMessage(theContext.getResources().getString(R.string.scent_query_dialog));
-        dialog.show();
+    public void setQueryListener(RecommendationQueryListener listener) {
+        this.listener = listener;
     }
 
+    //params[0] is the query to pass
     @Override
     protected String doInBackground(String... params){
+        Log.d(TAG, "doInBackground()");
 
         String result = "";
         ConnectivityManager connMgr = (ConnectivityManager)
@@ -64,14 +61,14 @@ public class ScentQueryTask extends AsyncTask<String, Void, String> {
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
 
-            Scent.ITEMS.clear();
             try {
-                //params[0] is the letter selected
-                return downloadUrl(url + "?letter=" + params[0]);
+                Log.d(TAG, "Trying to process URL");
+
+                return downloadUrl(url + "?good1=" + params[0] + "&good2=" + params[1]
+                        + "&bad1=" + params[2] + "&bad2=" + params[3]);
             } catch (IOException e) {
                 return "Unable to retrieve web page. URL may be invalid.";
             }
-            //new ScentWebTask().execute(url + "?letter=" + letter);
         } else {
             Log.e(TAG, "No network connection available.");
         }
@@ -84,7 +81,7 @@ public class ScentQueryTask extends AsyncTask<String, Void, String> {
     // a string.
     private String downloadUrl(String myurl) throws IOException {
 
-        Log.d(TAG, "downloadUrl");
+        Log.d(TAG, "downloadUrl: " + myurl);
 
 
         try {
@@ -137,6 +134,7 @@ public class ScentQueryTask extends AsyncTask<String, Void, String> {
         Log.d(TAG, "onPostExecute");
         // Parse JSON
         try {
+            List<ScentInfo> result = new ArrayList<ScentInfo>();
 
 
             JSONArray jsonArray = new JSONArray(s);
@@ -148,25 +146,33 @@ public class ScentQueryTask extends AsyncTask<String, Void, String> {
                 String id = (String) jsonObject.get("id");
                 String name = (String) jsonObject.get("name");
                 Log.d(TAG, "onPostExecute, id: " + id + ", name: " + name);
-                Scent.addItem(new ScentInfo(id, name));
+                result.add(new ScentInfo(id, name));
 
             }
 
-            //Put them in alphabetical order
-            Scent.sortItems();
-
-            theFragment.updateUI();
-
+            //Send results to listener activity
+            if (listener != null) {
+                listener.onCompletion(result);
+            }
 
         } catch(Exception e) {
             Log.d(TAG, "Parsing JSON Exception " + e.getClass() + ": " + e.getCause()
                     + "\nMessage: " + e.getMessage());
         }
 
-        if (dialog.isShowing()) {
-            dialog.dismiss();
-        }
+
+    }
+
+    public interface RecommendationQueryListener {
+
+        public void onCompletion(List<ScentInfo> results);
+
+
     }
 
 
 }
+
+
+
+

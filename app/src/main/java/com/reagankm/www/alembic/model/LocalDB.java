@@ -179,8 +179,9 @@ public class LocalDB {
             String id = c.getString(0);
             String name = c.getString(1);
             float rating = Float.valueOf(c.getString(2));
+            List<String> ingredientList = getIngredients(id);
 
-            ScentInfo scent = new ScentInfo(id, name, rating);
+            ScentInfo scent = new ScentInfo(id, name, rating, ingredientList);
             result.add(scent);
             c.moveToNext();
         }

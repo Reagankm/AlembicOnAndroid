@@ -67,7 +67,7 @@ public class ViewRatingsFragment extends AbstractListFragment {
 
 
 
-            List<ScentInfo> allRatings = db.getRatings();
+            List<ScentInfo> allRatings = db.getAllRatedScents();
             if (allRatings != null && allRatings.size() > 0) {
                 Scent.setAllItems(allRatings);
             } else {
@@ -97,7 +97,7 @@ public class ViewRatingsFragment extends AbstractListFragment {
     public void updateUI() {
 
         if (db != null) {
-            List<ScentInfo> allRatings = db.getRatings();
+            List<ScentInfo> allRatings = db.getAllRatedScents();
             if (allRatings != null && allRatings.size() > 0) {
                 Scent.setAllItems(allRatings);
             }

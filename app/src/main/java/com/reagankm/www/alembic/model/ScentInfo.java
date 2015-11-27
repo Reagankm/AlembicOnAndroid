@@ -49,6 +49,32 @@ public class ScentInfo implements Comparable {
         ingredientList.add(ingred);
     }
 
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) {
+            return true;
+        }
+
+        if (o instanceof ScentInfo) {
+            ScentInfo other = (ScentInfo) o;
+
+            if (other.name.equals(this.name) && other.id.equals(this.id)) {
+                return true;
+            }
+        }
+
+        return false;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode() + id.hashCode();
+    }
+
+
+    @Override
     public int compareTo(Object o){
 
         ScentInfo other = (ScentInfo) o;
