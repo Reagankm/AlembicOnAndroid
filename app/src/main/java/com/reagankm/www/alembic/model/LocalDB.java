@@ -76,6 +76,8 @@ public class LocalDB {
     }
 
 
+
+
     public boolean insertScent(String id, String name, float rating) {
 
 
@@ -153,7 +155,7 @@ public class LocalDB {
     }
 
     //Gets details of all rated scents
-    public List<ScentInfo> getRatings() {
+    public List<ScentInfo> getAllRatedScents() {
 
         List<ScentInfo> result = new ArrayList<>();
 

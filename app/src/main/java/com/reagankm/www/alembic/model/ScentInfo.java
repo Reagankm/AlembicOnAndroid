@@ -19,6 +19,7 @@ public class ScentInfo implements Comparable {
         this.id = id;
         this.name = name;
         ingredientList = new ArrayList<>();
+        rating = 0;
     }
 
 
@@ -34,6 +35,10 @@ public class ScentInfo implements Comparable {
         this.name = name;
         this.rating = rating;
         ingredientList = new ArrayList<>(ingreds);
+    }
+
+    public List<String> getIngredientList() {
+        return new ArrayList<>(ingredientList);
     }
 
     public void setIngredientList(List<String> ingreds) {
