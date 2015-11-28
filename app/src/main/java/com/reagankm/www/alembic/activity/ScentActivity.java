@@ -27,7 +27,7 @@ public class ScentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //To restore letterSelected if user rotates screen
+        //To restore scent selected if user rotates screen
         if (savedInstanceState != null){
             scentId = savedInstanceState.getString(SCENT_ID_SELECTED);
             scentName = savedInstanceState.getString(SCENT_NAME_SELECTED);

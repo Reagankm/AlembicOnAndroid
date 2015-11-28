@@ -1,14 +1,21 @@
 package com.reagankm.www.alembic.activity;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.reagankm.www.alembic.R;
+import com.reagankm.www.alembic.fragment.ScentFragment;
 import com.reagankm.www.alembic.model.LocalDB;
+import com.reagankm.www.alembic.model.Scent;
 import com.reagankm.www.alembic.model.ScentInfo;
 import com.reagankm.www.alembic.webtask.RecommendationQueryTask;
 
@@ -36,7 +43,12 @@ public class RecommendationAgentActivity extends AppCompatActivity
     private LocalDB db;
     private ArrayBlockingQueue<ScentInfo> allRecommendations;
     private List<ScentInfo> allRated;
-    //private Button
+    private Button revealButton;
+    private Iterator<ScentInfo> recIterator;
+    private FrameLayout frame;
+    FragmentManager fragManager;
+    Fragment theFragment;
+
     //Only want to show a small number of reccs at a time, but calculating these is
     //labor intensive so don't want to duplicate work/calls
     private static final int NUMBER_OF_SCENTS_TO_RECOMMEND = 10;
@@ -50,12 +62,21 @@ public class RecommendationAgentActivity extends AppCompatActivity
         db = LocalDB.getInstance(this);
 
         allRecommendations = new ArrayBlockingQueue<>(NUMBER_OF_SCENTS_TO_RECOMMEND);
-        //rv = (RecyclerView) findViewById(R.id.recommendations_recycler_view);
 
-        //TODO: Display message if user has no ratings
+        //rv = (RecyclerView) findViewById(R.id.recommendations_recycler_view);
+        revealButton = (Button) findViewById(R.id.reveal_button);
+        revealButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                revealButton.setText(getResources().getString(R.string.reveal_next));
+                displayRecommendations();
+
+            }
+        });
+
         if (db.getCount() < 1) {
             noRecommendations = (TextView) findViewById(R.id.no_recommendations);
-//            rv.setVisibility(View.GONE);
+
             noRecommendations.setVisibility(View.VISIBLE);
         }
 
@@ -113,6 +134,60 @@ public class RecommendationAgentActivity extends AppCompatActivity
     }
 
     private void displayRecommendations() {
+        if (frame == null) {
+            frame = (FrameLayout) findViewById(R.id.fragment_recommendation_container);
+            frame.setVisibility(View.VISIBLE);
+        }
+
+
+        if (recIterator == null || !recIterator.hasNext()) {
+            recIterator = allRecommendations.iterator();
+        }
+
+        if (recIterator.hasNext()) {
+            ScentInfo current = recIterator.next();
+            String scentId = current.getId();
+            String scentName = current.getName();
+
+            if (fragManager == null) {
+                fragManager = getSupportFragmentManager();
+
+
+            }
+
+            boolean firstRecommendation = fragManager.findFragmentById(R.id.fragment_recommendation_container) == null;
+
+            //Fragment theFragment = fragManager.findFragmentById(R.id.fragment_recommendation_container);
+
+            theFragment = new ScentFragment();
+            Bundle bundle = new Bundle();
+
+            bundle.putString(ScentActivity.getIdKey(), scentId);
+            bundle.putString(ScentActivity.getNameKey(), scentName);
+            theFragment.setArguments(bundle);
+
+            FragmentTransaction transaction = fragManager.beginTransaction();
+
+            if (firstRecommendation) {
+
+                transaction.add(R.id.fragment_recommendation_container, theFragment)
+                        .commit();
+            } else {
+
+                transaction.replace(R.id.fragment_recommendation_container, theFragment)
+                        .commit();
+            }
+
+
+
+
+
+        } else {
+            //Nothing to recommend or not loaded yet
+        }
+
+
+
 
     }
 

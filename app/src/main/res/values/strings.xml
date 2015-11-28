@@ -20,5 +20,6 @@
     <string name="rate_scent_instructions">Rate This Scent</string>
     <string name="empty_ratings_list">You haven\'t rated any scents yet. :(</string>
     <string name="reveal_button">Reveal Recommendation</string>
+    <string name="reveal_next">Reveal Another</string>
     <string name="no_recommendations">No recommendations available. Try rating more scents.</string>
 </resources>
