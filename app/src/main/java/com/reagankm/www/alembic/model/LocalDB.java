@@ -20,6 +20,7 @@ public class LocalDB {
 
     private static final String SCENT_TABLE_NAME = "Scent";
     private static final String INGREDIENT_TABLE_NAME = "Ingredient";
+    private static final String RECOMMENDATION_TABLE_NAME = "Recommendation";
 
     public static final int DB_VERSION = 1;
     public static final String DB_NAME = "LocalScentInfo.db";
@@ -28,11 +29,12 @@ public class LocalDB {
     private static SQLiteDatabase mSQLiteDatabase;
 
     private static LocalDB theLocalDB;
+    LocalDBHelper dbHelper;
 
 
 
     private LocalDB(Context context) {
-        LocalDBHelper dbHelper = new LocalDBHelper(
+        dbHelper = new LocalDBHelper(
                 context, DB_NAME, null, DB_VERSION);
         mSQLiteDatabase = dbHelper.getWritableDatabase();
 
@@ -75,9 +77,22 @@ public class LocalDB {
 
     }
 
+    public void insertRecommendation(String id, String name) {
+        ContentValues cv = new ContentValues();
+        cv.put("id", id);
+        cv.put("name", name);
+
+        //This should insert the row if it doesn't exist or, if it already does,
+        //do nothing
+        mSQLiteDatabase.insertWithOnConflict(RECOMMENDATION_TABLE_NAME, null, cv,
+                SQLiteDatabase.CONFLICT_IGNORE);
+
+
+    }
 
 
 
+    //insert a scent into rated scents
     public boolean insertScent(String id, String name, float rating) {
 
 
@@ -96,6 +111,7 @@ public class LocalDB {
         return rowId != -1;
     }
 
+    //remove a scent from the rated scents
     public boolean removeScent(String id) {
         boolean result = false;
 
@@ -122,11 +138,12 @@ public class LocalDB {
     }
 
     //Returns the number of rated scents
-    public int getCount() {
+    public int getRatedCount() {
         Long result = DatabaseUtils.queryNumEntries(mSQLiteDatabase, SCENT_TABLE_NAME);
         return result.intValue();
     }
 
+    //get the ingredients of scent with the given scent id
     public List<String> getIngredients(String scentId) {
         List<String> result = new ArrayList<>();
 
@@ -147,6 +164,38 @@ public class LocalDB {
         c.moveToFirst();
         for (int i = 0; i < c.getCount(); i++) {
             result.add(c.getString(0));
+            c.moveToNext();
+        }
+
+        return result;
+
+    }
+
+    //get all recommendations
+    public List<ScentInfo> getRecommendations() {
+        List<ScentInfo> result = new ArrayList<>();
+
+        String[] columns = { "id", "name" };
+
+        Cursor c = mSQLiteDatabase.query(
+                RECOMMENDATION_TABLE_NAME,  // The table to query
+                columns, // The columns to return
+                null, // The WHERE clause
+                null, // The values for the WHERE clause
+                null, // don't group the rows
+                null, // don't filter by row groups
+                null,  // The sort order
+                null // The row limit
+        );
+
+        c.moveToFirst();
+        for (int i = 0; i < c.getCount(); i++) {
+            String id = c.getString(0);
+            String name = c.getString(1);
+            ScentInfo scent = new ScentInfo(id, name);
+
+            result.add(scent);
+
             c.moveToNext();
         }
 
@@ -188,6 +237,13 @@ public class LocalDB {
 
 
         return result;
+
+    }
+
+    //Clear all recommendations
+    public void clearRecommendations() {
+
+        dbHelper.dropRecommendations(mSQLiteDatabase);
 
     }
 
@@ -250,8 +306,14 @@ public class LocalDB {
                         "name TEXT NOT NULL, " +
                         "scent_id TEXT NOT NULL)";
 
+        private static final String CREATE_RECOMMENDATION_TABLE =
+                "CREATE TABLE IF NOT EXISTS " + RECOMMENDATION_TABLE_NAME + " (" +
+                        "id TEXT PRIMARY KEY NOT NULL, " +
+                        "name TEXT NOT NULL)";
+
         private static final String DROP_SCENT = "DROP TABLE IF EXISTS " + SCENT_TABLE_NAME;
         private static final String DROP_INGREDIENT = "DROP TABLE IF EXISTS " + INGREDIENT_TABLE_NAME;
+        private static final String DROP_RECOMMENDATION = "DROP TABLE IF EXISTS " + RECOMMENDATION_TABLE_NAME;
 
         public LocalDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory,
                              int version) {
@@ -262,6 +324,7 @@ public class LocalDB {
         public void onCreate(SQLiteDatabase sqLiteDatabase) {
             sqLiteDatabase.execSQL(CREATE_SCENT_TABLE);
             sqLiteDatabase.execSQL(CREATE_INGREDIENT_TABLE);
+            sqLiteDatabase.execSQL(CREATE_RECOMMENDATION_TABLE);
         }
 
 
@@ -270,7 +333,13 @@ public class LocalDB {
 
             sqLiteDatabase.execSQL(DROP_SCENT);
             sqLiteDatabase.execSQL(DROP_INGREDIENT);
+            sqLiteDatabase.execSQL(DROP_RECOMMENDATION);
 
+            onCreate(sqLiteDatabase);
+        }
+
+        public void dropRecommendations(SQLiteDatabase sqLiteDatabase) {
+            sqLiteDatabase.execSQL(DROP_RECOMMENDATION);
             onCreate(sqLiteDatabase);
         }
 

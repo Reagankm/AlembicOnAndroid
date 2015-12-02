@@ -1,5 +1,6 @@
 package com.reagankm.www.alembic.activity;
 
+import android.app.ProgressDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -15,7 +16,6 @@ import android.widget.TextView;
 import com.reagankm.www.alembic.R;
 import com.reagankm.www.alembic.fragment.ScentFragment;
 import com.reagankm.www.alembic.model.LocalDB;
-import com.reagankm.www.alembic.model.Scent;
 import com.reagankm.www.alembic.model.ScentInfo;
 import com.reagankm.www.alembic.webtask.RecommendationQueryTask;
 
@@ -48,6 +48,7 @@ public class RecommendationAgentActivity extends AppCompatActivity
     private FrameLayout frame;
     FragmentManager fragManager;
     Fragment theFragment;
+    private ProgressDialog dialog;
 
     //Only want to show a small number of reccs at a time, but calculating these is
     //labor intensive so don't want to duplicate work/calls
@@ -58,6 +59,11 @@ public class RecommendationAgentActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recommendation_agent);
+        //dialog = new ProgressDialog(this);
+        //dialog.setMessage(getResources().getString(R.string.recommendation_query_dialog));
+        //dialog.show();
+        dialog = ProgressDialog.show(RecommendationAgentActivity.this, "", getString(R.string.recommendation_query_dialog));
+        Log.d(TAG, "Told dialog to show");
 
         db = LocalDB.getInstance(this);
 
@@ -74,43 +80,43 @@ public class RecommendationAgentActivity extends AppCompatActivity
             }
         });
 
-        if (db.getCount() < 1) {
+        if (db.getRatedCount() < 1) {
             noRecommendations = (TextView) findViewById(R.id.no_recommendations);
 
             noRecommendations.setVisibility(View.VISIBLE);
-        }
+        } else {
 
-        allRated = db.getAllRatedScents();
-        Log.d(TAG, "Loaded all rated with size " + allRated.size());
+            allRated = db.getAllRatedScents();
+            Log.d(TAG, "Loaded all rated with size " + allRated.size());
 
-        //sort by rating from highest to lowest
-        Collections.sort(allRated, new Comparator<ScentInfo>() {
+            //sort by rating from highest to lowest
+            Collections.sort(allRated, new Comparator<ScentInfo>() {
 
-            public int compare(ScentInfo a, ScentInfo b) {
+                public int compare(ScentInfo a, ScentInfo b) {
 
-                return (int) (b.getRating() - a.getRating());
+                    return (int) (b.getRating() - a.getRating());
+
+                }
+
+            });
+
+            //ScentInfo current = allScents.get(0);
+
+            goodPairs = new HashMap<>();  //>= 4
+            //badPairs = new HashMap<>(); //<= 2
+
+            int i;
+            for (i = 0; i < allRated.size() && allRated.get(i).getRating() >= 4; i++ ) {
+                ScentInfo current = allRated.get(i);
+                Log.d(TAG, "onCreate finding scentInfo with high ratings. Current "
+                        + current.getName() + " rated " + current.getRating());
+
+                loadIngredientPairs(current, goodPairs);
+                Log.d(TAG, "onCreate after returning from loadIngredPairs, goodPairs has size "
+                        + goodPairs.size());
 
             }
-
-        });
-
-        //ScentInfo current = allScents.get(0);
-
-        goodPairs = new HashMap<>();  //>= 4
-        //badPairs = new HashMap<>(); //<= 2
-
-        int i;
-        for (i = 0; i < allRated.size() && allRated.get(i).getRating() >= 4; i++ ) {
-            ScentInfo current = allRated.get(i);
-            Log.d(TAG, "onCreate finding scentInfo with high ratings. Current "
-                    + current.getName() + " rated " + current.getRating());
-
-            loadIngredientPairs(current, goodPairs);
-            Log.d(TAG, "onCreate after returning from loadIngredPairs, goodPairs has size "
-                    + goodPairs.size());
-
-        }
-        Log.d(TAG, "Loaded good pairs, goodPairs now has size " + goodPairs.size());
+            Log.d(TAG, "Loaded good pairs, goodPairs now has size " + goodPairs.size());
 //        int j;
 //        for (j = allRated.size() - 1; j >= 0 && allRated.get(j).getRating() <= 2; j--) {
 //            ScentInfo current = allRated.get(j);
@@ -122,14 +128,26 @@ public class RecommendationAgentActivity extends AppCompatActivity
 //                    + badPairs.size());
 //        }
 //        Log.d(TAG, "Loaded bad pairs, badPairs now has size " + badPairs.size());
-        //TODO: load up a mediumPairs map if necessary using i and j as start/end indexes
+            //TODO: load up a mediumPairs map if necessary using i and j as start/end indexes
 
-        loadRecommendations();
+            boolean recsFinished = loadRecommendations();
+
+            while (allRecommendations.size() < NUMBER_OF_SCENTS_TO_RECOMMEND && !recsFinished) {
+
+            }
+
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
 
 
 
+            //TODO: Choose recommendation if user only has 3s
 
-        //TODO: Choose recommendation if user only has 3s
+
+
+        }
+
 
     }
 
@@ -192,7 +210,7 @@ public class RecommendationAgentActivity extends AppCompatActivity
     }
 
     //TODO: Modify so this works without pairs (considering only single values)
-    private void loadRecommendations() {
+    private boolean loadRecommendations() {
         Log.d(TAG, "loadRecommendations()");
 
         Set<Map.Entry<String,Integer>> goodEntries = new TreeSet<>(new Comparator<Map.Entry<String, Integer>>() {
@@ -297,6 +315,8 @@ public class RecommendationAgentActivity extends AppCompatActivity
         } else {
             //goodentries size <= 0
         }
+
+        return true;
 
 
 

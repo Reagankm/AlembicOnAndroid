@@ -47,6 +47,8 @@ public class ScentAdapter extends RecyclerView.Adapter<ScentHolder> {
         {
 
             holder.getRootView().setBackgroundResource(R.color.accent);
+            holder.getRatingBar().setBackgroundColor(R.color.primary_light);
+
         }
         else
         {

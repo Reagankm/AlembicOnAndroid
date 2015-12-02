@@ -38,17 +38,21 @@ public class RecommendationQueryTask extends AsyncTask<String, Void, String>{
 
     private RecommendationQueryListener listener;
 
+
+
     /** The calling Activity's context. */
     private final Context theContext;
 
     public RecommendationQueryTask(Context c) {
         super();
         theContext = c;
+
     }
 
     public void setQueryListener(RecommendationQueryListener listener) {
         this.listener = listener;
     }
+
 
     //params[0] is the query to pass
     @Override
@@ -161,6 +165,7 @@ public class RecommendationQueryTask extends AsyncTask<String, Void, String>{
             Log.d(TAG, "Parsing JSON Exception " + e.getClass() + ": " + e.getCause()
                     + "\nMessage: " + e.getMessage());
         }
+
 
 
     }

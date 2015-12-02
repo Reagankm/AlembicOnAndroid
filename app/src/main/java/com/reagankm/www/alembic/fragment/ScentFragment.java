@@ -1,7 +1,10 @@
 package com.reagankm.www.alembic.fragment;
 
 
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.util.Log;
@@ -97,6 +100,12 @@ public class ScentFragment extends Fragment {
         rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                Activity activity = getActivity();
+
+                SharedPreferences sharedPrefs = getActivity().getSharedPreferences(getString(R.string.prefs_file), getActivity().MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPrefs.edit();
+                editor.putLong(getString(R.string.ratings_last_updated), System.currentTimeMillis());
+
                 //Save or update the rating
                 if (rating == 0) {
                     //Clear item from DB if it exists

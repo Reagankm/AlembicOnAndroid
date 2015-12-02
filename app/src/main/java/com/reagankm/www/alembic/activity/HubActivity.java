@@ -22,6 +22,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.reagankm.www.alembic.R;
+import com.reagankm.www.alembic.fragment.ShareDialogFragment;
 import com.reagankm.www.alembic.webtask.ScentScraperTask;
 import com.reagankm.www.alembic.fragment.UpdateDialogFragment;
 
@@ -32,7 +33,9 @@ import com.reagankm.www.alembic.fragment.UpdateDialogFragment;
  * @author Reagan Middlebrook
  * @version Phase 1
  */
-public class HubActivity extends AppCompatActivity implements UpdateDialogFragment.UpdateDialogListener {
+public class HubActivity extends AppCompatActivity
+        implements UpdateDialogFragment.UpdateDialogListener,
+        ShareDialogFragment.ShareDialogListener {
 
     /** The tag to use when logging from this activity. */
     private static final String TAG = "HubActivityTag";
@@ -193,6 +196,9 @@ public class HubActivity extends AppCompatActivity implements UpdateDialogFragme
         }
 
 
+        menu.findItem(R.id.share_menu_item).setVisible(true);
+
+
         Log.d(TAG, "Create menu");
 
         return super.onCreateOptionsMenu(menu);
@@ -218,6 +224,7 @@ public class HubActivity extends AppCompatActivity implements UpdateDialogFragme
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        boolean superResult = super.onOptionsItemSelected(item);
 
         int id = item.getItemId();
 
@@ -230,8 +237,14 @@ public class HubActivity extends AppCompatActivity implements UpdateDialogFragme
                 finish();
 
             return true;
+        } else if (id == R.id.share_menu_item) {
+            //Todo: show dialog asking if they want to share recs or ratings
+            //Todo: Email recs or ratings
+            return superResult;
+
+
         } else {
-            return super.onOptionsItemSelected(item);
+            return superResult;
         }
 
 
@@ -250,6 +263,23 @@ public class HubActivity extends AppCompatActivity implements UpdateDialogFragme
     @Override
     public void onDialogNegativeClick(DialogFragment dialog){
         //No action needed
+    }
+
+    @Override
+    public void onDialogShareRecommendationsClick(DialogFragment dialog) {
+
+
+
+    }
+
+    @Override
+    public void onDialogShareRatingsClick(DialogFragment dialog) {
+
+    }
+
+    @Override
+    public void onDialogCancelShareClick(DialogFragment dialog) {
+
     }
 
 

@@ -4,7 +4,6 @@ package com.reagankm.www.alembic.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,12 +12,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.reagankm.www.alembic.R;
-import com.reagankm.www.alembic.activity.ScentListActivity;
 import com.reagankm.www.alembic.model.LocalDB;
 import com.reagankm.www.alembic.model.Scent;
-import com.reagankm.www.alembic.model.ScentAdapter;
 import com.reagankm.www.alembic.model.ScentInfo;
-import com.reagankm.www.alembic.webtask.ScentQueryTask;
 
 import java.util.List;
 
@@ -53,7 +49,7 @@ public class ViewRatingsFragment extends AbstractListFragment {
         super.onStart();
 
         db = LocalDB.getInstance(getContext());
-        int count = db.getCount();
+        int count = db.getRatedCount();
 
         if (count == 0) {
             //display message telling user they haven't rated anything

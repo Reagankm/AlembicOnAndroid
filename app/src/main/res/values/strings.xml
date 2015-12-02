@@ -15,11 +15,19 @@
     <string name="dialog_title">Update Scents?</string>
     <string name="dialog_message_pt_1">Last updated on:\n</string>
     <string name="dialog_message_pt_2">\n\nDo you wish to update scents now?</string>
+    <string name="share_dialog_title">Share</string>
+    <string name="share_dialog_text">You can share your recommendations and ratings over email.  What would you like to share?</string>
     <string name="scent_query_dialog">Fetching scents&#8230;</string>
+    <string name="recommendation_query_dialog">Consulting the oracle&#8230;</string>
+    <string name="share">Share&#8230;</string>
+    <string name="recommendations">Recommendations</string>
+    <string name="ratings">Ratings</string>
+    <string name="cancel">Cancel</string>
     <string name="title_activity_scent_list_container">ScentListContainerActivity</string>
     <string name="rate_scent_instructions">Rate This Scent</string>
     <string name="empty_ratings_list">You haven\'t rated any scents yet. :(</string>
     <string name="reveal_button">Reveal Recommendation</string>
     <string name="reveal_next">Reveal Another</string>
+    <string name="ratings_last_updated">RatingsLastUpdatedTimestamp</string>
     <string name="no_recommendations">No recommendations available. Try rating more scents.</string>
 </resources>
