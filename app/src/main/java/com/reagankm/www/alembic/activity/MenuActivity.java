@@ -127,8 +127,10 @@ public class MenuActivity extends AppCompatActivity implements
 
         //LocalDB db = LocalDB.getInstance(this);
         LocalDB db = new LocalDB(this);
+        int recommendationCount = db.getRecommendationCount();
+        db.closeDB();
         Log.d(TAG, "Got instance of localDB");
-        if (db.getRecommendationCount() > 0) {
+        if (recommendationCount > 0) {
             Log.d(TAG, "Recommendations exist in db");
             List<ScentInfo> recommendations = db.getRecommendations();
             Log.d(TAG, "Got list of recommended scents");
@@ -185,14 +187,16 @@ public class MenuActivity extends AppCompatActivity implements
 
         //LocalDB db = LocalDB.getInstance(this);
         LocalDB db = new LocalDB(this);
+
         if (db.getRatedCount() > 0) {
             List<ScentInfo> ratings = db.getAllRatedScents();
+
             StringBuilder sb = new StringBuilder();
-            sb.append(getString(R.string.rated_email_text) + "\n");
+            sb.append(getString(R.string.rated_email_text) + "\n\n");
 
             for (ScentInfo scent : ratings) {
 
-                sb.append(scent.getName() + ": " + scent.getRating() + "\nID: " + scent.getId() + "\n");
+                sb.append(scent.getName() + ": " + scent.getRating() + "\nID: " + scent.getId() + "\n\n");
 
             }
 
@@ -213,6 +217,8 @@ public class MenuActivity extends AppCompatActivity implements
 
 
         }
+
+        db.closeDB();
 
 
 

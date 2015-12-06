@@ -150,6 +150,8 @@ public class GetIngredientsTask extends AsyncTask<String, Void, String> {
 
             }
 
+            db.closeDB();
+
 
         } catch(Exception e) {
             Log.d(TAG, "Parsing JSON Exception " + e.getClass() + ": " + e.getCause()

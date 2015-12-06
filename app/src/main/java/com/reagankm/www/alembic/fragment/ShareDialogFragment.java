@@ -66,7 +66,7 @@ public class ShareDialogFragment extends DialogFragment {
 
                     }
                 })
-                .setNeutralButton(R.string.ratings, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.ratings, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
                         // User cancelled the dialog. No further action needed.
@@ -75,7 +75,7 @@ public class ShareDialogFragment extends DialogFragment {
 
                     }
                 })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                .setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
 
 

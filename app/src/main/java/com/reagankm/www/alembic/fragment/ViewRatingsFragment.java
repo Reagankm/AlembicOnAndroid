@@ -24,7 +24,7 @@ import java.util.List;
 public class ViewRatingsFragment extends AbstractListFragment {
 
     private static final String TAG = "ViewRatingsFragmentTag";
-    LocalDB db;
+    //LocalDB db;
     TextView emptyText;
   //  Activity act;
 
@@ -62,7 +62,8 @@ public class ViewRatingsFragment extends AbstractListFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         emptyText = (TextView) view.findViewById(R.id.empty_ratings_text_view);
-        db = new LocalDB(getContext());
+        //db = new LocalDB(getContext());
+        LocalDB db = new LocalDB(getContext());
         int count = db.getRatedCount();
         Log.d(TAG, "onCreateView: got local rated count");
         if (count == 0) {
@@ -86,6 +87,8 @@ public class ViewRatingsFragment extends AbstractListFragment {
             }
         }
 
+        db.closeDB();
+
 
     }
 
@@ -108,9 +111,11 @@ public class ViewRatingsFragment extends AbstractListFragment {
 
     @Override
     public void updateUI() {
+        LocalDB db = new LocalDB(getContext());
 
         if (db != null) {
             List<ScentInfo> allRatings = db.getAllRatedScents();
+            db.closeDB();
             if (allRatings != null && allRatings.size() > 0) {
                 Scent.setAllItems(allRatings);
             }

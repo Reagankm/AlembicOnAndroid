@@ -36,6 +36,7 @@ public class ScentHolder extends AbstractScentHolder {
         //LocalDB db = LocalDB.getInstance(theContext);
         LocalDB db = new LocalDB(theContext);
         float rating = db.getRating(scent.getId());
+        db.closeDB();
         RatingBar rb = getRatingBar();
         if (rating > 0) {
 

@@ -38,7 +38,7 @@ public class ScentFragment extends Fragment {
     private View thisView;
 
     private AppCompatRatingBar rating;
-    private LocalDB localDB;
+    //private LocalDB localDB;
 
     public ScentFragment() {
         // Required empty public constructor
@@ -58,7 +58,7 @@ public class ScentFragment extends Fragment {
         }
 
         //localDB = LocalDB.getInstance(getContext());
-        localDB = new LocalDB(getContext());
+
 
 
     }
@@ -81,6 +81,7 @@ public class ScentFragment extends Fragment {
 
         nameView.setText(name);
         idView.setText(id);
+        final LocalDB localDB = new LocalDB(getContext());
 
         List<String> ingredList = localDB.getIngredients(id);
         if (ingredList.size() > 0) {
@@ -105,16 +106,22 @@ public class ScentFragment extends Fragment {
                 SharedPreferences sharedPrefs = getActivity().getSharedPreferences(getString(R.string.prefs_file), getActivity().MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPrefs.edit();
                 editor.putLong(getString(R.string.ratings_last_updated), System.currentTimeMillis());
+                editor.apply();
+                Log.d(TAG, "Storing time last rated");
 
                 //Save or update the rating
                 if (rating == 0) {
                     //Clear item from DB if it exists
+                    LocalDB localDB = new LocalDB(getContext());
                     boolean result = localDB.removeScent(id);
+                    localDB.closeDB();
                     Log.d(TAG, "onRatingChanged deleteScent result = " + result);
 
                 } else {
                     //Update rating and store scent with rating in local DB
+                    LocalDB localDB = new LocalDB(getContext());
                     boolean result = localDB.insertScent(id, name, rating);
+                    localDB.closeDB();
                     Log.d(TAG, "onRatingChanged insertScent result = " + result);
 
                     //Store ingredients of scent in local DB
@@ -130,6 +137,8 @@ public class ScentFragment extends Fragment {
         if (prevRating > 0) {
             rating.setRating(prevRating);
         }
+
+        localDB.closeDB();
 
         return thisView;
     }

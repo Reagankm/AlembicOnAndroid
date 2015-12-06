@@ -36,12 +36,13 @@ public class RecommendationAgentActivity extends MenuActivity
         implements RecommendationQueryTask.RecommendationQueryListener {
 
     private static final String TAG = "RecommendAgentActvtyTag";
+    private boolean storedFresh;
 
     private TextView noRecommendations;
     private RecyclerView rv;
     private Map<String, Integer> goodPairs;
     private Map<String, Integer> badPairs;
-    private LocalDB db;
+    private int webTaskCounter;
     private ArrayBlockingQueue<ScentInfo> allRecommendations;
     private List<ScentInfo> allRated;
     private Button revealButton;
@@ -61,14 +62,14 @@ public class RecommendationAgentActivity extends MenuActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recommendation_agent);
+
         //dialog = new ProgressDialog(this);
         //dialog.setMessage(getResources().getString(R.string.recommendation_query_dialog));
         //dialog.show();
-        dialog = ProgressDialog.show(RecommendationAgentActivity.this, "", getString(R.string.recommendation_query_dialog));
-        Log.d(TAG, "Told dialog to show");
+
 
         //db = LocalDB.getInstance(this);
-        db = new LocalDB(this);
+
         allRecommendations = new ArrayBlockingQueue<>(NUMBER_OF_SCENTS_TO_RECOMMEND);
 
         //rv = (RecyclerView) findViewById(R.id.recommendations_recycler_view);
@@ -82,14 +83,20 @@ public class RecommendationAgentActivity extends MenuActivity
             }
         });
 
+        LocalDB db = new LocalDB(this);
+
         if (db.getRatedCount() < 1) {
+            db.closeDB();
             noRecommendations = (TextView) findViewById(R.id.no_recommendations);
 
             noRecommendations.setVisibility(View.VISIBLE);
         } else {
+            dialog = ProgressDialog.show(RecommendationAgentActivity.this, "", getString(R.string.recommendation_query_dialog));
+            Log.d(TAG, "Told dialog to show");
 
             //Get all rated scents and load scent pairs for those rated highly
             allRated = db.getAllRatedScents();
+            db.closeDB();
             Log.d(TAG, "Loaded all rated with size " + allRated.size());
 
             //sort by rating from highest to lowest
@@ -102,6 +109,7 @@ public class RecommendationAgentActivity extends MenuActivity
                 }
 
             });
+
 
             //ScentInfo current = allScents.get(0);
 
@@ -135,13 +143,14 @@ public class RecommendationAgentActivity extends MenuActivity
 
             boolean recsFinished = loadRecommendations();
 
-            while (allRecommendations.size() < NUMBER_OF_SCENTS_TO_RECOMMEND && !recsFinished) {
+//            while (allRecommendations.size() < NUMBER_OF_SCENTS_TO_RECOMMEND && !recsFinished) {
+//
+//            }
 
-            }
-
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-            }
+//            if (dialog.isShowing()) {
+//                dialog.dismiss();
+//                Log.d(TAG, "Told dialog to stop showing");
+//            }
 
 
 
@@ -155,6 +164,7 @@ public class RecommendationAgentActivity extends MenuActivity
     }
 
     private void displayRecommendations() {
+        Log.d(TAG, "displayRecommendations");
         if (frame == null) {
             frame = (FrameLayout) findViewById(R.id.fragment_recommendation_container);
             frame.setVisibility(View.VISIBLE);
@@ -166,9 +176,11 @@ public class RecommendationAgentActivity extends MenuActivity
         }
 
         if (recIterator.hasNext()) {
+
             ScentInfo current = recIterator.next();
             String scentId = current.getId();
             String scentName = current.getName();
+            Log.d(TAG, "Displaying scent " + scentName);
 
             if (fragManager == null) {
                 fragManager = getSupportFragmentManager();
@@ -220,15 +232,19 @@ public class RecommendationAgentActivity extends MenuActivity
         sharedPrefs = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE);
 
         Long timeLastRated = sharedPrefs.getLong(getString(R.string.ratings_last_updated), -1);
+
         Long timeLastRatedWhenLastRecommendations = sharedPrefs.getLong(getString(R.string.ratings_timestamp_at_last_recommandation), -1);
 
+        Log.d(TAG, "TimeLastRated: " + timeLastRated + ", Recommendations TimeLastRated: " + timeLastRatedWhenLastRecommendations);
+
         if (timeLastRated != -1 && timeLastRatedWhenLastRecommendations != -1
-                && timeLastRated == timeLastRatedWhenLastRecommendations) {
+                && timeLastRated.equals(timeLastRatedWhenLastRecommendations)) {
+
             loadRecommendationsFromDb();
 
         } else {
             result = loadFreshRecommendations();
-            storeRecommendationsInDb();
+
         }
 
         return result;
@@ -238,29 +254,51 @@ public class RecommendationAgentActivity extends MenuActivity
     }
 
     private void loadRecommendationsFromDb() {
-        List<ScentInfo> recs = db.getRecommendations();
-        for (int i = 0; i < recs.size() && allRecommendations.size() < NUMBER_OF_SCENTS_TO_RECOMMEND; i++) {
-            allRecommendations.add(recs.get(i));
+        Log.d(TAG, "loadRecommendationsFromDb");
+        if (allRecommendations.size() < NUMBER_OF_SCENTS_TO_RECOMMEND) {
+            Log.d(TAG, "loadRecommendationsFromDb: fetching recommendations from DB");
+            LocalDB db = new LocalDB(this);
+            List<ScentInfo> recs = db.getRecommendations();
+            db.closeDB();
+            for (int i = 0; i < recs.size() && allRecommendations.size() < NUMBER_OF_SCENTS_TO_RECOMMEND; i++) {
+                Log.d(TAG, "loadRecommendationsFromDB: adding scent " + recs.get(i));
+                allRecommendations.add(recs.get(i));
+            }
+
+        } else {
+            Log.d(TAG, "loadRecommendationsFromDb: Recommendations still saved in class");
+        }
+
+        if (dialog.isShowing()) {
+            dialog.dismiss();
+            Log.d(TAG, "loadRecommendationsFromDb: Told dialog to stop showing");
         }
 
     }
 
     private void storeRecommendationsInDb() {
+        Log.d(TAG, "storeRecommendationsInDb");
+        LocalDB db = new LocalDB(this);
 
         for (ScentInfo scent : allRecommendations) {
             String name = scent.getName();
             String id = scent.getId();
+            Log.d(TAG, "storeRecommendationsInDB: storing scent " + name);
             db.insertRecommendation(id, name);
         }
+        db.closeDB();
 
     }
 
     private boolean loadFreshRecommendations() {
+        Log.d(TAG, "loadFreshRecommendations");
+        storedFresh = false;
 
         //Save the new recommendations timestamp as the current timestamp for ratings_last_updated
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putLong(getString(R.string.ratings_timestamp_at_last_recommandation),
                 sharedPrefs.getLong(getString(R.string.ratings_last_updated), -1));
+        editor.apply();
 
 
         Set<Map.Entry<String,Integer>> goodEntries = new TreeSet<>(new Comparator<Map.Entry<String, Integer>>() {
@@ -277,6 +315,7 @@ public class RecommendationAgentActivity extends MenuActivity
 
 
         });
+
 
 //        Set<Map.Entry<String, Integer>> badEntries = new TreeSet<>(new Comparator<Map.Entry<String, Integer>>() {
 //
@@ -320,6 +359,7 @@ public class RecommendationAgentActivity extends MenuActivity
                 ) {
 
             Iterator<Map.Entry<String, Integer>> goodIterator = goodEntries.iterator();
+            webTaskCounter = 0;
             while (goodIterator.hasNext()
                     && allRecommendations.size() < NUMBER_OF_SCENTS_TO_RECOMMEND) {
                 Map.Entry<String, Integer> goodEntry = goodIterator.next();
@@ -352,12 +392,15 @@ public class RecommendationAgentActivity extends MenuActivity
                     //params[3] = URLEncoder.encode(badTwo, "UTF-8");
 
                     RecommendationQueryTask webtask = new RecommendationQueryTask(this);
+                    webTaskCounter++;
                     webtask.setQueryListener(this);
                     webtask.execute(params);
                 } catch (Exception e) {
                     Log.e(TAG, "Exception in encoding: " + e);
                 }
             }
+
+            Log.d(TAG, "Done creating webTasks");
 
 
 
@@ -404,6 +447,7 @@ public class RecommendationAgentActivity extends MenuActivity
     @Override
     public void onCompletion(List<ScentInfo> results) {
         Log.d(TAG, "onCompletion");
+        webTaskCounter--;
 
         if (allRecommendations.size() < NUMBER_OF_SCENTS_TO_RECOMMEND) {
 
@@ -433,6 +477,16 @@ public class RecommendationAgentActivity extends MenuActivity
                     allRecommendations.add(recommendation);
                 }
             }
+        }
+
+        if (!storedFresh && (webTaskCounter < 1 || allRecommendations.size() >= NUMBER_OF_SCENTS_TO_RECOMMEND)) {
+            storedFresh = true;
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+                Log.d(TAG, "Told dialog to stop showing");
+            }
+
+            storeRecommendationsInDb();
         }
 
     }
