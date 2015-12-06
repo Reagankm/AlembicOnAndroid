@@ -41,13 +41,13 @@ public class ScentInfo implements Comparable {
         return new ArrayList<>(ingredientList);
     }
 
-    public void setIngredientList(List<String> ingreds) {
-        ingredientList = new ArrayList<>(ingreds);
-    }
-
-    public void addIngredient(String ingred) {
-        ingredientList.add(ingred);
-    }
+//    public void setIngredientList(List<String> ingreds) {
+//        ingredientList = new ArrayList<>(ingreds);
+//    }
+//
+//    public void addIngredient(String ingred) {
+//        ingredientList.add(ingred);
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -101,9 +101,9 @@ public class ScentInfo implements Comparable {
         return rating;
     }
 
-    public void setRating(float rating) {
-        this.rating = rating;
-    }
+//    public void setRating(float rating) {
+//        this.rating = rating;
+//    }
 
     @Override
     public String toString() {
