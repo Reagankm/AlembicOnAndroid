@@ -5,7 +5,8 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 /**
- * Created by reagan on 11/15/15.
+ * A special ImageView class to create perfectly square images (for use
+ * as the DirectoryActivity pictures).
  */
 public class SquareImageView extends ImageView
 {

@@ -293,6 +293,7 @@ public class RecommendationAgentActivity extends MenuActivity
     private boolean loadFreshRecommendations() {
         Log.d(TAG, "loadFreshRecommendations");
         storedFresh = false;
+        allRecommendations.clear();
 
         //Save the new recommendations timestamp as the current timestamp for ratings_last_updated
         SharedPreferences.Editor editor = sharedPrefs.edit();
