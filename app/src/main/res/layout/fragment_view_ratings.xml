@@ -9,6 +9,9 @@
         android:layout_height="match_parent"
         android:text="@string/empty_ratings_list"
         android:id="@+id/empty_ratings_text_view"
+        android:gravity="center"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:textSize="20sp"
         android:visibility="gone"
         />
 

@@ -34,6 +34,7 @@
             android:name=".activity.HubActivity"
             android:launchMode="singleTop">
         </activity>
+
         <activity
             android:name=".activity.LoginActivity"
             android:launchMode="singleTop">
@@ -46,6 +47,14 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name=".activity.DirectoryActivity">
+        </activity>
+        <activity android:name=".activity.MenuActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SENDTO" />
+                <data android:scheme="mailto" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
         </activity>
         <activity android:name=".activity.ScentActivity">
         </activity>

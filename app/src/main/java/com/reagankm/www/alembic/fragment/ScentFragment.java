@@ -57,8 +57,8 @@ public class ScentFragment extends Fragment {
             Log.d(TAG, "onCreate has no savedInstanceState");
         }
 
-        localDB = LocalDB.getInstance(getContext());
-
+        //localDB = LocalDB.getInstance(getContext());
+        localDB = new LocalDB(getContext());
 
 
     }

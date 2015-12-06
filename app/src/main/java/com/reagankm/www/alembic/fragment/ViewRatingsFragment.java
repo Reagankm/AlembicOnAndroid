@@ -26,7 +26,7 @@ public class ViewRatingsFragment extends AbstractListFragment {
     private static final String TAG = "ViewRatingsFragmentTag";
     LocalDB db;
     TextView emptyText;
-    Activity act;
+  //  Activity act;
 
 
     public ViewRatingsFragment() {
@@ -36,9 +36,9 @@ public class ViewRatingsFragment extends AbstractListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView");
         View v = super.onCreateView(inflater, container, savedInstanceState);
-        act = (Activity) getContext();
-        emptyText = (TextView) act.findViewById(R.id.empty_ratings_text_view);
+        //act = (Activity) getContext();
         return v;
 
     }
@@ -48,15 +48,29 @@ public class ViewRatingsFragment extends AbstractListFragment {
     public void onStart() {
         super.onStart();
 
-        db = LocalDB.getInstance(getContext());
-        int count = db.getRatedCount();
+        //db = LocalDB.getInstance(getContext());
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        emptyText = (TextView) view.findViewById(R.id.empty_ratings_text_view);
+        db = new LocalDB(getContext());
+        int count = db.getRatedCount();
+        Log.d(TAG, "onCreateView: got local rated count");
         if (count == 0) {
             //display message telling user they haven't rated anything
             emptyText.setVisibility(View.VISIBLE);
 
             //Hide recycler view
-            RecyclerView rv = (RecyclerView) act.findViewById(R.id.view_ratings_recycler_view);
+            RecyclerView rv = (RecyclerView) view.findViewById(R.id.view_ratings_recycler_view);
             rv.setVisibility(View.GONE);
 
         } else {
@@ -71,12 +85,8 @@ public class ViewRatingsFragment extends AbstractListFragment {
                         " or empty list: " + allRatings);
             }
         }
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        updateUI();
+
     }
 
     @Override
@@ -84,9 +94,16 @@ public class ViewRatingsFragment extends AbstractListFragment {
         return (RecyclerView) thisView.findViewById(R.id.view_ratings_recycler_view);
     }
 
+
+
     @Override
     public View inflateView(LayoutInflater inflater, ViewGroup container) {
-        return inflater.inflate(R.layout.fragment_view_ratings, container, false);
+        Log.d(TAG, "inflateView");
+        View v = inflater.inflate(R.layout.fragment_view_ratings, container, false);
+
+        Log.d(TAG, "inflateView: Assigned emptyText");
+
+        return v;
     }
 
     @Override

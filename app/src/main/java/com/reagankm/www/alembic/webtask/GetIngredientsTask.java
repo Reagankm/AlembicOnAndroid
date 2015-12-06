@@ -138,8 +138,8 @@ public class GetIngredientsTask extends AsyncTask<String, Void, String> {
             JSONArray jsonArray = new JSONArray(s);
             //JSONArray jsonArray = new JSONArray(line);
             Log.d(TAG, "onPostExecute, Converted line to JSON array");
-            LocalDB db = LocalDB.getInstance();
-
+            //LocalDB db = LocalDB.getInstance();
+            LocalDB db = new LocalDB(theContext);
             for (int i=0; i<jsonArray.length(); i++) {
                 JSONObject jsonObject = (JSONObject) jsonArray.get(i);
                 String ingredientName = (String) jsonObject.get("name");

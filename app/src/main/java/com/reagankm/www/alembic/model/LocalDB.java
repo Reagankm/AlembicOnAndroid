@@ -29,11 +29,12 @@ public class LocalDB {
     private static SQLiteDatabase mSQLiteDatabase;
 
     private static LocalDB theLocalDB;
-    LocalDBHelper dbHelper;
+    private  LocalDBHelper dbHelper;
+   // private static Context context;
 
 
-
-    private LocalDB(Context context) {
+    public LocalDB(Context context) {
+        //this.context = context;
         dbHelper = new LocalDBHelper(
                 context, DB_NAME, null, DB_VERSION);
         mSQLiteDatabase = dbHelper.getWritableDatabase();
@@ -42,24 +43,28 @@ public class LocalDB {
         mSQLiteDatabase.enableWriteAheadLogging();
     }
 
-    public static LocalDB getInstance(Context c) {
-
-        if (theLocalDB == null) {
-            theLocalDB = new LocalDB(c);
-        }
-
-        return theLocalDB;
-
-    }
-
-    public static LocalDB getInstance() {
-        if (theLocalDB != null) {
-            return theLocalDB;
-        } else {
-            throw new IllegalStateException("theLocalDB has not been initialized with a context");
-        }
-    }
-
+//    public static LocalDB getInstance(Context c) {
+//
+//
+//       // mSQLiteDatabase.close();
+//        theLocalDB = new LocalDB(c);
+//
+//        if (theLocalDB == null) {
+//            theLocalDB = new LocalDB(c);
+//        }
+//
+//        return theLocalDB;
+//
+//    }
+//
+//    public static LocalDB getInstance() {
+//        if (theLocalDB != null) {
+//            return theLocalDB;
+//        } else {
+//            throw new IllegalStateException("theLocalDB has not been initialized with a context");
+//        }
+//    }
+//
     public void insertIngredient(String ingredName, String scentId) {
 
         ContentValues cv = new ContentValues();
@@ -140,6 +145,11 @@ public class LocalDB {
     //Returns the number of rated scents
     public int getRatedCount() {
         Long result = DatabaseUtils.queryNumEntries(mSQLiteDatabase, SCENT_TABLE_NAME);
+        return result.intValue();
+    }
+
+    public int getRecommendationCount() {
+        Long result = DatabaseUtils.queryNumEntries(mSQLiteDatabase, RECOMMENDATION_TABLE_NAME);
         return result.intValue();
     }
 
@@ -322,6 +332,7 @@ public class LocalDB {
 
         @Override
         public void onCreate(SQLiteDatabase sqLiteDatabase) {
+            Log.d(TAG, "sqlitehelper onCreate");
             sqLiteDatabase.execSQL(CREATE_SCENT_TABLE);
             sqLiteDatabase.execSQL(CREATE_INGREDIENT_TABLE);
             sqLiteDatabase.execSQL(CREATE_RECOMMENDATION_TABLE);
@@ -330,6 +341,7 @@ public class LocalDB {
 
         @Override
         public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+            Log.d(TAG, "sqlitehelper onUpgrade");
 
             sqLiteDatabase.execSQL(DROP_SCENT);
             sqLiteDatabase.execSQL(DROP_INGREDIENT);

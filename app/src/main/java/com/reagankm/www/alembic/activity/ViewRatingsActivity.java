@@ -8,7 +8,7 @@ import android.os.Bundle;
 import com.reagankm.www.alembic.R;
 import com.reagankm.www.alembic.fragment.ViewRatingsFragment;
 
-public class ViewRatingsActivity extends AppCompatActivity {
+public class ViewRatingsActivity extends MenuActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

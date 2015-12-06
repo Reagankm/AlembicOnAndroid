@@ -1,6 +1,7 @@
 package com.reagankm.www.alembic.activity;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -31,7 +32,7 @@ import java.util.TreeSet;
 import java.util.concurrent.ArrayBlockingQueue;
 
 
-public class RecommendationAgentActivity extends AppCompatActivity
+public class RecommendationAgentActivity extends MenuActivity
         implements RecommendationQueryTask.RecommendationQueryListener {
 
     private static final String TAG = "RecommendAgentActvtyTag";
@@ -49,6 +50,7 @@ public class RecommendationAgentActivity extends AppCompatActivity
     FragmentManager fragManager;
     Fragment theFragment;
     private ProgressDialog dialog;
+    private SharedPreferences sharedPrefs;
 
     //Only want to show a small number of reccs at a time, but calculating these is
     //labor intensive so don't want to duplicate work/calls
@@ -65,8 +67,8 @@ public class RecommendationAgentActivity extends AppCompatActivity
         dialog = ProgressDialog.show(RecommendationAgentActivity.this, "", getString(R.string.recommendation_query_dialog));
         Log.d(TAG, "Told dialog to show");
 
-        db = LocalDB.getInstance(this);
-
+        //db = LocalDB.getInstance(this);
+        db = new LocalDB(this);
         allRecommendations = new ArrayBlockingQueue<>(NUMBER_OF_SCENTS_TO_RECOMMEND);
 
         //rv = (RecyclerView) findViewById(R.id.recommendations_recycler_view);
@@ -86,6 +88,7 @@ public class RecommendationAgentActivity extends AppCompatActivity
             noRecommendations.setVisibility(View.VISIBLE);
         } else {
 
+            //Get all rated scents and load scent pairs for those rated highly
             allRated = db.getAllRatedScents();
             Log.d(TAG, "Loaded all rated with size " + allRated.size());
 
@@ -211,7 +214,54 @@ public class RecommendationAgentActivity extends AppCompatActivity
 
     //TODO: Modify so this works without pairs (considering only single values)
     private boolean loadRecommendations() {
+        boolean result = true;
         Log.d(TAG, "loadRecommendations()");
+
+        sharedPrefs = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE);
+
+        Long timeLastRated = sharedPrefs.getLong(getString(R.string.ratings_last_updated), -1);
+        Long timeLastRatedWhenLastRecommendations = sharedPrefs.getLong(getString(R.string.ratings_timestamp_at_last_recommandation), -1);
+
+        if (timeLastRated != -1 && timeLastRatedWhenLastRecommendations != -1
+                && timeLastRated == timeLastRatedWhenLastRecommendations) {
+            loadRecommendationsFromDb();
+
+        } else {
+            result = loadFreshRecommendations();
+            storeRecommendationsInDb();
+        }
+
+        return result;
+
+
+
+    }
+
+    private void loadRecommendationsFromDb() {
+        List<ScentInfo> recs = db.getRecommendations();
+        for (int i = 0; i < recs.size() && allRecommendations.size() < NUMBER_OF_SCENTS_TO_RECOMMEND; i++) {
+            allRecommendations.add(recs.get(i));
+        }
+
+    }
+
+    private void storeRecommendationsInDb() {
+
+        for (ScentInfo scent : allRecommendations) {
+            String name = scent.getName();
+            String id = scent.getId();
+            db.insertRecommendation(id, name);
+        }
+
+    }
+
+    private boolean loadFreshRecommendations() {
+
+        //Save the new recommendations timestamp as the current timestamp for ratings_last_updated
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putLong(getString(R.string.ratings_timestamp_at_last_recommandation),
+                sharedPrefs.getLong(getString(R.string.ratings_last_updated), -1));
+
 
         Set<Map.Entry<String,Integer>> goodEntries = new TreeSet<>(new Comparator<Map.Entry<String, Integer>>() {
 
@@ -266,7 +316,7 @@ public class RecommendationAgentActivity extends AppCompatActivity
 //        }
 
         if (goodEntries.size() > 0
-        //        && badEntries.size() > 0
+            //        && badEntries.size() > 0
                 ) {
 
             Iterator<Map.Entry<String, Integer>> goodIterator = goodEntries.iterator();
@@ -317,9 +367,6 @@ public class RecommendationAgentActivity extends AppCompatActivity
         }
 
         return true;
-
-
-
 
 
     }

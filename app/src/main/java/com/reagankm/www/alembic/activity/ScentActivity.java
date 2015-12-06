@@ -12,7 +12,7 @@ import com.reagankm.www.alembic.R;
 import com.reagankm.www.alembic.fragment.ScentFragment;
 import com.reagankm.www.alembic.model.ScentInfo;
 
-public class ScentActivity extends AppCompatActivity {
+public class ScentActivity extends MenuActivity {
 
     private static final String SCENT_ID_SELECTED
             = "com.reagankm.www.alembic.scent_id_selected";

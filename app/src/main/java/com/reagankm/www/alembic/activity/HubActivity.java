@@ -33,9 +33,8 @@ import com.reagankm.www.alembic.fragment.UpdateDialogFragment;
  * @author Reagan Middlebrook
  * @version Phase 1
  */
-public class HubActivity extends AppCompatActivity
-        implements UpdateDialogFragment.UpdateDialogListener,
-        ShareDialogFragment.ShareDialogListener {
+public class HubActivity extends MenuActivity
+        implements UpdateDialogFragment.UpdateDialogListener {
 
     /** The tag to use when logging from this activity. */
     private static final String TAG = "HubActivityTag";
@@ -68,7 +67,7 @@ public class HubActivity extends AppCompatActivity
 
         super.onCreate(savedInstanceState);
 
-        FacebookSdk.sdkInitialize(getApplicationContext());
+
 
         setContentView(R.layout.activity_hub);
 
@@ -177,78 +176,11 @@ public class HubActivity extends AppCompatActivity
     }
 
 
-    /**
-     * Inflate the menu and display LogOut menu item only if
-     * user is currently logged in.
-     *
-     * @param menu the menu to be inflated
-     * @return whether the menu inflation was successful
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_hub, menu);
-
-        if (isLoggedIn()){
-            menu.findItem(R.id.action_login_toggle).setVisible(true);
-        } else {
-            menu.findItem(R.id.action_login_toggle).setVisible(false);
-        }
 
 
-        menu.findItem(R.id.share_menu_item).setVisible(true);
 
 
-        Log.d(TAG, "Create menu");
 
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    /**
-     * A helper method that returns whether or not the user is
-     * logged in.
-     *
-     * @return true if the user is logged in with Facebook, otherwise
-     * false
-     */
-    private boolean isLoggedIn() {
-        //If there is an access token, user is logged in
-        return AccessToken.getCurrentAccessToken() != null;
-    }
-
-    /**
-     * Defines how to behave when a menu option is selected.
-     *
-     * @param item the menu item selected
-     * @return whether the menu item processed successfully
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        boolean superResult = super.onOptionsItemSelected(item);
-
-        int id = item.getItemId();
-
-        if (id == R.id.action_login_toggle) {
-                //Log the user out and return them to the Login screen
-
-                LoginManager.getInstance().logOut();
-                Intent launchHub = new Intent(HubActivity.this, LoginActivity.class);
-                startActivity(launchHub);
-                finish();
-
-            return true;
-        } else if (id == R.id.share_menu_item) {
-            //Todo: show dialog asking if they want to share recs or ratings
-            //Todo: Email recs or ratings
-            return superResult;
-
-
-        } else {
-            return superResult;
-        }
-
-
-    }
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog){
@@ -265,22 +197,7 @@ public class HubActivity extends AppCompatActivity
         //No action needed
     }
 
-    @Override
-    public void onDialogShareRecommendationsClick(DialogFragment dialog) {
 
-
-
-    }
-
-    @Override
-    public void onDialogShareRatingsClick(DialogFragment dialog) {
-
-    }
-
-    @Override
-    public void onDialogCancelShareClick(DialogFragment dialog) {
-
-    }
 
 
 

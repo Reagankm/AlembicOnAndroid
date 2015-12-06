@@ -28,6 +28,13 @@
     <string name="empty_ratings_list">You haven\'t rated any scents yet. :(</string>
     <string name="reveal_button">Reveal Recommendation</string>
     <string name="reveal_next">Reveal Another</string>
+    <string name="rated_email_text">Your ratings for Black Phoenix Alchemy Lab scents:</string>
+    <string name="recommendation_email_text">Your recommended Black Phoenix Alchemy Lab scents, as calculated by Alembic:</string>
+    <string name="recommendation_subject">Recommended Scents from Black Phoenix Alchemy Lab</string>
+    <string name="ratings_subject">Rated Scents from Black Phoenix Alchemy Lab</string>
     <string name="ratings_last_updated">RatingsLastUpdatedTimestamp</string>
+    <string name="ratings_timestamp_at_last_recommandation">RecommendationLastUpdatedTimestamp</string>
     <string name="no_recommendations">No recommendations available. Try rating more scents.</string>
+    <string name="no_ratings_share">No rated scents exist. Try "Rate Scents" from the main hub.</string>
+    <string name="no_recommendations_share">No recommendations exist. Try "Get a Recommendation" from the main hub first.</string>
 </resources>

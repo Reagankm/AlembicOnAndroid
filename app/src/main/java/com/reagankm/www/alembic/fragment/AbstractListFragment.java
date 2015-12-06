@@ -36,7 +36,7 @@ public abstract class AbstractListFragment extends Fragment {
 
     private RecyclerView scentListRecyclerView;
 
-
+    private static final String TAG = "AbstractListFragmentTag";
 
 
     public AbstractListFragment() {
@@ -56,11 +56,13 @@ public abstract class AbstractListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Log.d(TAG, "onCreateView");
         thisView = inflateView(inflater, container);
 
         scentListRecyclerView = fetchScentListRecyclerView();
                // = (RecyclerView) thisView.findViewById(R.id.abstract_recycler_view);
         scentListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         updateUI();
 
 
