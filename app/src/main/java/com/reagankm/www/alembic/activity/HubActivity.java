@@ -2,58 +2,35 @@ package com.reagankm.www.alembic.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.reagankm.www.alembic.R;
-import com.reagankm.www.alembic.fragment.ShareDialogFragment;
-import com.reagankm.www.alembic.webtask.ScentScraperTask;
 import com.reagankm.www.alembic.fragment.UpdateDialogFragment;
+import com.reagankm.www.alembic.webtask.ScentScraperTask;
 
 /**
  * Displays the main hub of the app with navigation buttons to
  * all the actions the app allows.
  *
  * @author Reagan Middlebrook
- * @version Phase 1
+ * @version Phase 2
  */
 public class HubActivity extends MenuActivity
         implements UpdateDialogFragment.UpdateDialogListener {
 
     /** The tag to use when logging from this activity. */
     private static final String TAG = "HubActivityTag";
-
-    /** The button that launches an update of the scent database. */
-    private Button updateButton;
-
-    /** The button that launches the rate scents activity. */
-    private Button rateButton;
-
-    /** The button that launches the recommendation activity. */
-    private Button recommendButton;
-
-    /** The button that launches the review ratings activity. */
-    private Button reviewButton;
-
-    /** The callback manager to handle calls from
-     * onActivityResult to Facebook's SDK */
-    private CallbackManager callbackManager;
 
     /**
      * Creates the Hub UI and calls a method to
@@ -71,7 +48,7 @@ public class HubActivity extends MenuActivity
 
         setContentView(R.layout.activity_hub);
 
-        callbackManager = CallbackManager.Factory.create();
+        CallbackManager callbackManager = CallbackManager.Factory.create();
 
         //Get user's name and set welcome message
         final SharedPreferences sharedPrefs = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE);
@@ -123,10 +100,10 @@ public class HubActivity extends MenuActivity
         });
 
         //Create buttons and set onClickListeners
-        updateButton = (Button) findViewById(R.id.update_button);
-        rateButton = (Button) findViewById(R.id.rate_button);
-        recommendButton = (Button) findViewById(R.id.suggest_button);
-        reviewButton = (Button) findViewById(R.id.review_button);
+        Button updateButton = (Button) findViewById(R.id.update_button);
+        Button rateButton = (Button) findViewById(R.id.rate_button);
+        Button recommendButton = (Button) findViewById(R.id.suggest_button);
+        Button reviewButton = (Button) findViewById(R.id.review_button);
 
         updateButton.setOnClickListener(new View.OnClickListener() {
 
@@ -138,7 +115,7 @@ public class HubActivity extends MenuActivity
                 dialog.show(getSupportFragmentManager(), "UpdateDialogFragment");
 
                 //If they choose yes, dialog will call onDialogPositiveClick to handle
-                //update
+                //the update
 
             }
         });
@@ -147,7 +124,7 @@ public class HubActivity extends MenuActivity
 
             @Override
             public void onClick(View v){
-
+                //Launch directory where user can rate scents
                 Intent launchDirectory = new Intent(HubActivity.this, DirectoryActivity.class);
                 startActivity(launchDirectory);
 
@@ -160,6 +137,7 @@ public class HubActivity extends MenuActivity
         reviewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Launch ViewRatings so user can see scents they've rated
                 Intent launchRated = new Intent(HubActivity.this, ViewRatingsActivity.class);
                 startActivity(launchRated);
             }
@@ -168,6 +146,7 @@ public class HubActivity extends MenuActivity
         recommendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Launch RecommendationAgent to recommend scents to user
                 Intent launchAgent = new Intent(HubActivity.this, RecommendationAgentActivity.class);
                 startActivity(launchAgent);
             }
@@ -175,26 +154,31 @@ public class HubActivity extends MenuActivity
 
     }
 
-
-
-
-
-
-
-
+    /**
+     * Called in response to a positive click on the UpdateDialog, this
+     * method begins the long task of updating scents.
+     *
+     * @param dialog the UpdateDialog whose button was clicked
+     */
     @Override
     public void onDialogPositiveClick(DialogFragment dialog){
         //Scrape and parse BPAL data and update database with it, then
         //display message to let the user know how much new data was found
-        //(So they know button did something)
 
         ScentScraperTask scrapes = new ScentScraperTask(HubActivity.this);
         scrapes.execute();
     }
 
+    /**
+     * Called in response to a negative click on the UpdateDialog, this
+     * method cancels the update task.
+     *
+     * @param dialog the UpdateDialog whose button was clicked
+     */
     @Override
     public void onDialogNegativeClick(DialogFragment dialog){
-        //No action needed
+        //No action needed as this click indicates the user does not want
+        //to update
     }
 
 
