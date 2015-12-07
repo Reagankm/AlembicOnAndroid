@@ -1,16 +1,11 @@
 package com.reagankm.www.alembic.webtask;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.reagankm.www.alembic.R;
-import com.reagankm.www.alembic.fragment.ScentListFragment;
-import com.reagankm.www.alembic.model.Scent;
 import com.reagankm.www.alembic.model.ScentInfo;
 
 import org.json.JSONArray;
@@ -25,36 +20,57 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by reagan on 11/26/15.
+ * From the MySQL database on the server, fetches scents who have the same
+ * pair of ingredients as those given.
+ *
+ * @author Reagan Middlebrook
+ * @version Phase 2
  */
 public class RecommendationQueryTask extends AsyncTask<String, Void, String>{
 
+    /** The tag to use when logging from this activity. */
     private static final String TAG = "RecommendQueryTaskTag";
 
+    /** The URL location for the PHP query. */
     private static final String
             url = "http://cssgate.insttech.washington.edu/~reagankm/recommendationQuery.php";
 
+    /** A buffered reader to read the data from the server. */
     private BufferedReader in;
 
+    /** A listener to be updated when the query is complete. */
     private RecommendationQueryListener listener;
-
-
 
     /** The calling Activity's context. */
     private final Context theContext;
 
+    /**
+     * Creates a task with the given context.
+     *
+     * @param c the context
+     */
     public RecommendationQueryTask(Context c) {
         super();
         theContext = c;
 
     }
 
+    /**
+     * Sets the listener to the one provided.
+     *
+     * @param listener the listener
+     */
     public void setQueryListener(RecommendationQueryListener listener) {
         this.listener = listener;
     }
 
 
-    //params[0] is the query to pass
+    /**
+     * Sends the ingredient pair as a request to the PHP URL.
+     *
+     * @param params the ingredients at index 0 and 1
+     * @return the resulting JSON as a String
+     */
     @Override
     protected String doInBackground(String... params){
         Log.d(TAG, "doInBackground()");
@@ -66,11 +82,11 @@ public class RecommendationQueryTask extends AsyncTask<String, Void, String>{
         if (networkInfo != null && networkInfo.isConnected()) {
 
             try {
+                // params[0] is the first ingredient in the pair,
+                // params[1] is the second
                 Log.d(TAG, "Trying to process URL");
 
-                return downloadUrl(url + "?good1=" + params[0] + "&good2=" + params[1]
-                       // + "&bad1=" + params[2] + "&bad2=" + params[3]
-                       );
+                return downloadUrl(url + "?good1=" + params[0] + "&good2=" + params[1]);
             } catch (IOException e) {
                 return "Unable to retrieve web page. URL may be invalid.";
             }
@@ -81,9 +97,14 @@ public class RecommendationQueryTask extends AsyncTask<String, Void, String>{
         return result;
     }
 
-    // Given a URL, establishes an HttpUrlConnection and retrieves
-    // the web page content as a InputStream, which it returns as
-    // a string.
+    /**
+     * Given a URL, establishes an HttpUrlConnection and retrieves
+     * the web page content as a InputStream, which it returns as
+     * a string.
+     * @param myurl the URL
+     * @return the String result
+     * @throws IOException in case of error
+     */
     private String downloadUrl(String myurl) throws IOException {
 
         Log.d(TAG, "downloadUrl: " + myurl);
@@ -104,9 +125,6 @@ public class RecommendationQueryTask extends AsyncTask<String, Void, String>{
             in = new BufferedReader(
                     new InputStreamReader( conn.getInputStream() )
             );
-
-
-            // Convert the InputStream into a string
 
             //initiate strings to hold response data
             String inputLine;
@@ -132,7 +150,12 @@ public class RecommendationQueryTask extends AsyncTask<String, Void, String>{
         return null;
     }
 
-    //Parse the result and load the scents as items in the scent list
+
+    /**
+     * Parse the result and load the scents as items in the scent list.
+     *
+     * @param s the resulting JSON as a String
+     */
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
@@ -143,7 +166,6 @@ public class RecommendationQueryTask extends AsyncTask<String, Void, String>{
 
 
             JSONArray jsonArray = new JSONArray(s);
-            //JSONArray jsonArray = new JSONArray(line);
             Log.d(TAG, "onPostExecute, Converted line to JSON array");
 
             for (int i=0; i<jsonArray.length(); i++) {
@@ -170,9 +192,17 @@ public class RecommendationQueryTask extends AsyncTask<String, Void, String>{
 
     }
 
+    /**
+     * An interface for listening to this query.
+     */
     public interface RecommendationQueryListener {
 
-        public void onCompletion(List<ScentInfo> results);
+        /**
+         * Sends the results upon completion.
+         *
+         * @param results the resulting ScentInfo list
+         */
+        void onCompletion(List<ScentInfo> results);
 
 
     }

@@ -1,7 +1,6 @@
 package com.reagankm.www.alembic.webtask;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -33,7 +32,7 @@ import java.net.URLEncoder;
  * the total number of scents added in a Toast message when finsihed.
  *
  * @author Reagan Middlebrook
- * @version Phase 1
+ * @version Phase 2
  */
 public class ScentScraperTask extends AsyncTask<String, Integer, String> {
 
@@ -50,8 +49,12 @@ public class ScentScraperTask extends AsyncTask<String, Integer, String> {
     private static final String
             addScentPhpUrl = "http://cssgate.insttech.washington.edu/~reagankm/addScent.php";
 
+    /** The URL of the PHP script that accepts a scent id and ingredient name and id and adds it to the Ingredient table */
     private static final String
             addIngredientPhpUrl = "http://cssgate.insttech.washington.edu/~reagankm/addIngredient.php";
+
+    /** Estimated maximum number of results to be parsed. */
+    private static final int ESTIMATED_MAX = 6529;
 
     /** A count of how many new scents were added. */
     private int productCount;
@@ -59,14 +62,15 @@ public class ScentScraperTask extends AsyncTask<String, Integer, String> {
     /** The calling Activity's context. */
     private final Context theContext;
 
-    //private ProgressDialog dialog;
+    /** The progress bar. */
     private ProgressBar mProgressBar;
 
+    /** The image replaced by the progress bar. */
     private ImageView originalImage;
 
+    /** The button replaced by the progress bar. */
     private Button updateButton;
 
-    private static final int ESTIMATED_MAX = 6529;
 
     /**
      * Creates a ScentScraperTask and sets its context.
@@ -79,20 +83,16 @@ public class ScentScraperTask extends AsyncTask<String, Integer, String> {
         updateButton = (Button) hub.findViewById(R.id.update_button);
         mProgressBar = (ProgressBar) hub.findViewById(R.id.progressBar);
         originalImage = (ImageView) hub.findViewById(R.id.get_new_image);
-        //dialog = new ProgressDialog(theContext);
     }
 
-
+    /**
+     * Hides the update button and its image, replacing them with a progress bar.
+     */
     protected void onPreExecute() {
-        //dialog.setMessage("Searching for new scents...");
-        //dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        //dialog.setMax(ESTIMATED_MAX_SCENTS);
-        //dialog.setTitle("Updating Scent List");
         originalImage.setVisibility(View.GONE);
         updateButton.setVisibility(View.GONE);
         mProgressBar.setMax(ESTIMATED_MAX);
         mProgressBar.setVisibility(View.VISIBLE);
-        //dialog.show();
     }
 
     /**
@@ -113,52 +113,48 @@ public class ScentScraperTask extends AsyncTask<String, Integer, String> {
             //of products by name
             Document doc = Jsoup.connect(DIRECTORY_URL).timeout(0).maxBodySize(10*1024*1024).get();
 
-            //productCount += addScentsByName(doc);
-            //productCount += addScentsByIngredient(doc);
 
             //Examine all scents in the product list
-//            Elements productHeader = doc.getElementsByClass("products");
-//            for (Element el : productHeader){
-//                //Log.d(TAG, "Parsing an element within productHeader");
-//                Element productList = el.nextElementSibling();
-//                Elements products = productList.getElementsByTag("a");
-//
-//                //Send the name and unique id of each product to be passed into the
-//                //database
-//                for (Element p : products){
-//                    String name = p.attr("title");
-//
-//                    //The id is the unique part of the product's URL
-//                    //(To differentiate between scents with the same name)
-//                    String id = p.attr("href");
-//                    id = id.substring(STORE_PATH.length());
-//                    Log.d(TAG, "Before Encoding: Title = " + name + ", id = " + id);
-//
-//                    //Encode name and id so they're safe to pass as part of a web address
-//                    name = URLEncoder.encode(name, "UTF-8");
-//                    id = URLEncoder.encode(id, "UTF-8");
-//                    //Log.d(TAG, "After Encoding: Title = " + name + ", id = " + id);
-//
-//                    //Send the product to be added to the database via the PHP script
-//                    if (id.length() > 0 && name.length() > 0) {
-//
-//                        String requestURL = addScentPhpUrl + "?id=" + id + "&name=" + name;
-//                        String phpResult = downloadUrl(requestURL);
-//
-//                        //Update the progress dialog by 1 scent
-//                        publishProgress(1);
-//                        if (scentAddedSuccessfully(phpResult)) {
-//                            productCount++;
-//                        }
-//                    }
-//                }
-//            }
+            Elements productHeader = doc.getElementsByClass("products");
+            for (Element el : productHeader){
+                //Log.d(TAG, "Parsing an element within productHeader");
+                Element productList = el.nextElementSibling();
+                Elements products = productList.getElementsByTag("a");
+
+                //Send the name and unique id of each product to be passed into the
+                //database
+                for (Element p : products){
+                    String name = p.attr("title");
+
+                    //The id is the unique part of the product's URL
+                    //(To differentiate between scents with the same name)
+                    String id = p.attr("href");
+                    id = id.substring(STORE_PATH.length());
+                    Log.d(TAG, "Before Encoding: Title = " + name + ", id = " + id);
+
+                    //Encode name and id so they're safe to pass as part of a web address
+                    name = URLEncoder.encode(name, "UTF-8");
+                    id = URLEncoder.encode(id, "UTF-8");
+
+                    //Send the product to be added to the database via the PHP script
+                    if (id.length() > 0 && name.length() > 0) {
+
+                        String requestURL = addScentPhpUrl + "?id=" + id + "&name=" + name;
+                        String phpResult = downloadUrl(requestURL);
+
+                        //Update the progress dialog by 1 scent
+                        publishProgress(1);
+                        if (scentAddedSuccessfully(phpResult)) {
+                            productCount++;
+                        }
+                    }
+                }
+            }
             //Examine all scents in the ingredients list
 
             //h2.topic + table selects the table under the topic header
             //thing ul selects all ul children of thing
             Elements ingredientList = doc.select("h2.topic + table ul");
-            //Log.d(TAG, "Fetched ingredient list");
             for (Element el : ingredientList){
                 Elements ingredients = el.getElementsByTag("a");
                 for (Element e : ingredients){
@@ -337,25 +333,25 @@ public class ScentScraperTask extends AsyncTask<String, Integer, String> {
         return new String(buffer);
     }
 
+    /**
+     * Update the progress bar by the amount at index 0.
+     * @param values the amount to update the progress by
+     */
     @Override
     protected void onProgressUpdate(Integer... values){
-        //dialog.incrementProgressBy(values[0]);
         mProgressBar.incrementProgressBy(values[0]);
 
     }
 
     /**
-     * Displays a Toast message containing the result returned by doInBackground().
+     * Displays a Toast message containing the result returned by doInBackground()
+     * and returns the button and imageview to the UI.
      *
      * @param result the result message from doInBackground()
      */
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-
-        //if (dialog.isShowing()) {
-        //    dialog.dismiss();
-        //}
 
         mProgressBar.setVisibility(View.GONE);
         originalImage.setVisibility(View.VISIBLE);

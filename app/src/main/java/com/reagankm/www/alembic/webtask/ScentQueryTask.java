@@ -27,20 +27,30 @@ import java.net.URL;
  */
 public class ScentQueryTask extends AsyncTask<String, Void, String> {
 
+    /** The tag to use when logging from this activity. */
     private static final String TAG = "ScentQueryTaskTag";
 
+    /** The URL location for the PHP query. */
     private static final String
             url = "http://cssgate.insttech.washington.edu/~reagankm/queryScents.php";
 
+    /** A buffered reader to read the data from the server. */
     private BufferedReader in;
 
+    /** A dialog to display the query's progress. */
     private ProgressDialog dialog;
 
+    /** The fragment where the results should be displayed. */
     private final ScentListFragment theFragment;
 
     /** The calling Activity's context. */
     private final Context theContext;
 
+    /**
+     * Creates a task with the given context and ScentListFragment.
+     * @param c the context
+     * @param f the fragment
+     */
     public ScentQueryTask(Context c, ScentListFragment f) {
         super();
         theContext = c;
@@ -49,12 +59,21 @@ public class ScentQueryTask extends AsyncTask<String, Void, String> {
         dialog = new ProgressDialog(activity);
     }
 
+    /**
+     * Start the progress dialog.
+     */
     @Override
     protected void onPreExecute() {
         dialog.setMessage(theContext.getResources().getString(R.string.scent_query_dialog));
         dialog.show();
     }
 
+    /**
+     * Sends the letter as a request to the PHP URL.
+     *
+     * @param params the letter as index 0
+     * @return the resulting JSON as a String
+     */
     @Override
     protected String doInBackground(String... params){
 
@@ -71,7 +90,6 @@ public class ScentQueryTask extends AsyncTask<String, Void, String> {
             } catch (IOException e) {
                 return "Unable to retrieve web page. URL may be invalid.";
             }
-            //new ScentWebTask().execute(url + "?letter=" + letter);
         } else {
             Log.e(TAG, "No network connection available.");
         }
@@ -79,9 +97,14 @@ public class ScentQueryTask extends AsyncTask<String, Void, String> {
         return result;
     }
 
-    // Given a URL, establishes an HttpUrlConnection and retrieves
-    // the web page content as a InputStream, which it returns as
-    // a string.
+    /**
+     * Given a URL, establishes an HttpUrlConnection and retrieves
+     * the web page content as a InputStream, which it returns as
+     * a string.
+     * @param myurl the URL
+     * @return the String result
+     * @throws IOException in case of error
+     */
     private String downloadUrl(String myurl) throws IOException {
 
         Log.d(TAG, "downloadUrl");
@@ -130,7 +153,12 @@ public class ScentQueryTask extends AsyncTask<String, Void, String> {
         return null;
     }
 
-    //Parse the result and load the scents as items in the scent list
+
+    /**
+     * Parse the result and load the scents as items in the scent list.
+     *
+     * @param s the resulting JSON as a String
+     */
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
@@ -140,7 +168,6 @@ public class ScentQueryTask extends AsyncTask<String, Void, String> {
 
 
             JSONArray jsonArray = new JSONArray(s);
-            //JSONArray jsonArray = new JSONArray(line);
             Log.d(TAG, "onPostExecute, Converted line to JSON array");
 
             for (int i=0; i<jsonArray.length(); i++) {

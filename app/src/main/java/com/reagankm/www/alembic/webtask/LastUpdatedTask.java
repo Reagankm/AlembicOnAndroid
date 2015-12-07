@@ -4,12 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.reagankm.www.alembic.R;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -20,23 +18,39 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by reagan on 11/10/15.
+ * From the MySQL database on the server, fetches the ingredient
+ * list corresponding to a given scent id.
+ *
+ * @author Reagan Middlebrook
+ * @version Phase 2
  */
 public class LastUpdatedTask extends AsyncTask<Void, Void, String> {
 
     /** The tag to use when logging from this activity. */
     private static final String TAG = "LastUpdatedTaskTag";
 
+    /** The URL location for the PHP query. */
     private static final String
             phpUrl = "http://cssgate.insttech.washington.edu/~reagankm/lastUpdated.php";
 
     /** The calling Activity's context. */
     private final Context theContext;
 
+    /**
+     * Creates a task with the given context.
+     *
+     * @param c the context
+     */
     public LastUpdatedTask(Context c){
         theContext = c;
     }
 
+    /**
+     * Sends a request for the last updated date from the PHP URL.
+     *
+     * @param params none (Void[])
+     * @return the resulting JSON as a String
+     */
     @Override
     protected String doInBackground(Void... params) {
         try {
@@ -115,7 +129,7 @@ public class LastUpdatedTask extends AsyncTask<Void, Void, String> {
 
 
     /**
-     * Saves result to shared preferences
+     * Saves the result to shared preferences
      *
      * @param result the result message from doInBackground()
      */
@@ -151,8 +165,5 @@ public class LastUpdatedTask extends AsyncTask<Void, Void, String> {
 
 
     }
-
-
-
 
 }

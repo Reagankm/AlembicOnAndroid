@@ -1,55 +1,64 @@
 package com.reagankm.www.alembic.webtask;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.reagankm.www.alembic.R;
-import com.reagankm.www.alembic.fragment.ScentListFragment;
 import com.reagankm.www.alembic.model.LocalDB;
-import com.reagankm.www.alembic.model.Scent;
-import com.reagankm.www.alembic.model.ScentInfo;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by reagan on 11/26/15.
+ * From the MySQL database on the server, fetches the ingredient
+ * list corresponding to a given scent id.
+ *
+ * @author Reagan Middlebrook
+ * @version Phase 2
  */
 public class GetIngredientsTask extends AsyncTask<String, Void, String> {
 
     /** The tag to use when logging from this activity. */
     private static final String TAG = "GetIngredientsTaskTag";
 
+    /** The URL location for the PHP query. */
     private static final String
             phpUrl = "http://cssgate.insttech.washington.edu/~reagankm/queryIngredients.php";
 
+    /** The context. */
     private Context theContext;
 
+    /** A buffered reader to read the data from the server. */
     private BufferedReader in;
 
+    /** The scent ID whose ingredients are sought. */
     private String scentId;
 
+    /**
+     * Creates a task with the given context.
+     *
+     * @param c the context
+     */
     public GetIngredientsTask(Context c) {
         super();
         theContext = c;
 
     }
 
+    /**
+     * Sends the scent ID as a request to the PHP URL.
+     *
+     * @param params the Scent ID as index 0
+     * @return the resulting JSON as a String
+     */
     @Override
     protected String doInBackground(String... params) {
         String result = "";
@@ -66,7 +75,7 @@ public class GetIngredientsTask extends AsyncTask<String, Void, String> {
             } catch (IOException e) {
                 return "Unable to retrieve web page. URL may be invalid.";
             }
-            //new ScentWebTask().execute(url + "?letter=" + letter);
+
         } else {
             Log.e(TAG, "No network connection available.");
         }
@@ -74,9 +83,15 @@ public class GetIngredientsTask extends AsyncTask<String, Void, String> {
         return result;
     }
 
-    // Given a URL, establishes an HttpUrlConnection and retrieves
-    // the web page content as a InputStream, which it returns as
-    // a string.
+
+    /**
+     * Given a URL, establishes an HttpUrlConnection and retrieves
+     * the web page content as a InputStream, which it returns as
+     * a string.
+     * @param myurl the URL
+     * @return the String result
+     * @throws IOException in case of error
+     */
     private String downloadUrl(String myurl) throws IOException {
 
         Log.d(TAG, "downloadUrl");
@@ -98,8 +113,6 @@ public class GetIngredientsTask extends AsyncTask<String, Void, String> {
                     new InputStreamReader( conn.getInputStream() )
             );
 
-
-            // Convert the InputStream into a string
 
             //initiate strings to hold response data
             String inputLine;
@@ -126,7 +139,11 @@ public class GetIngredientsTask extends AsyncTask<String, Void, String> {
     }
 
 
-    //Parse the result and load the ingredients in the LocalDB
+    /**
+     * Parse the result and load the ingredients in the LocalDB.
+     *
+     * @param s the resulting JSON as a String
+     */
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
@@ -136,14 +153,13 @@ public class GetIngredientsTask extends AsyncTask<String, Void, String> {
 
 
             JSONArray jsonArray = new JSONArray(s);
-            //JSONArray jsonArray = new JSONArray(line);
             Log.d(TAG, "onPostExecute, Converted line to JSON array");
-            //LocalDB db = LocalDB.getInstance();
+
             LocalDB db = new LocalDB(theContext);
             for (int i=0; i<jsonArray.length(); i++) {
                 JSONObject jsonObject = (JSONObject) jsonArray.get(i);
                 String ingredientName = (String) jsonObject.get("name");
-              //  String name = (String) jsonObject.get("name");
+
                 Log.d(TAG, "onPostExecute, storing in local DB ingredientName: " + ingredientName
                         + ", scentId: " + scentId);
                 db.insertIngredient(ingredientName, scentId);
