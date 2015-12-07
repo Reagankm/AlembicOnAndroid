@@ -12,29 +12,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by reagan on 11/17/15.
+ * Local storage for scents the user has rated, recommendations that
+ * have been calculated, and ingredients for rated scents.
+ *
+ * @author Reagan Middlebrook
+ * @version Phase 2
  */
 public class LocalDB {
 
+    /** The tag to use when logging from this activity. */
     private static final String TAG = "LocalDBTag";
 
+    /** The name of the scent table. */
     private static final String SCENT_TABLE_NAME = "Scent";
+
+    /** The name of the ingredient table. */
     private static final String INGREDIENT_TABLE_NAME = "Ingredient";
+
+    /** The name of the recommendation table. */
     private static final String RECOMMENDATION_TABLE_NAME = "Recommendation";
 
+    /** The version number. */
     public static final int DB_VERSION = 1;
+
+    /** The database name. */
     public static final String DB_NAME = "LocalScentInfo.db";
 
-
+    /** The SQLite database. */
     private static SQLiteDatabase mSQLiteDatabase;
 
-    private static LocalDB theLocalDB;
+    /** The local db helper. */
     private  LocalDBHelper dbHelper;
-   // private static Context context;
 
-
+    /**
+     * Creates a local DB object with the given context.
+     *
+     * @param context the context
+     */
     public LocalDB(Context context) {
-        //this.context = context;
         dbHelper = new LocalDBHelper(
                 context, DB_NAME, null, DB_VERSION);
         mSQLiteDatabase = dbHelper.getWritableDatabase();
@@ -43,35 +58,18 @@ public class LocalDB {
         mSQLiteDatabase.enableWriteAheadLogging();
     }
 
-//    public static LocalDB getInstance(Context c) {
-//
-//
-//       // mSQLiteDatabase.close();
-//        theLocalDB = new LocalDB(c);
-//
-//        if (theLocalDB == null) {
-//            theLocalDB = new LocalDB(c);
-//        }
-//
-//        return theLocalDB;
-//
-//    }
-//
-//    public static LocalDB getInstance() {
-//        if (theLocalDB != null) {
-//            return theLocalDB;
-//        } else {
-//            throw new IllegalStateException("theLocalDB has not been initialized with a context");
-//        }
-//    }
-//
+    /**
+     * Insert an ingredient into the ingredient table.
+     *
+     * @param ingredName the ingredient name
+     * @param scentId the id of the scent with that ingredient
+     */
     public void insertIngredient(String ingredName, String scentId) {
 
         ContentValues cv = new ContentValues();
         cv.put("id", ingredName + scentId);
         cv.put("name", ingredName);
         cv.put("scent_id", scentId);
-
 
         //This should insert the row if it doesn't exist or, if it already does,
         //do nothing
@@ -82,6 +80,12 @@ public class LocalDB {
 
     }
 
+    /**
+     * Insert a recommended scent into the recommendation table.
+     *
+     * @param id the scent ID
+     * @param name the scent name
+     */
     public void insertRecommendation(String id, String name) {
         ContentValues cv = new ContentValues();
         cv.put("id", id);
@@ -95,9 +99,14 @@ public class LocalDB {
 
     }
 
-
-
-    //insert a scent into rated scents
+    /**
+     * Insert a scent into rated scents table.
+     *
+     * @param id the scent ID
+     * @param name the scent name
+     * @param rating the scent rating
+     * @return true if inserted correctly, otherwise false
+     */
     public boolean insertScent(String id, String name, float rating) {
 
 
@@ -116,7 +125,12 @@ public class LocalDB {
         return rowId != -1;
     }
 
-    //remove a scent from the rated scents
+    /**
+     * Remove a scent from the rated scents table.
+     *
+     * @param id the id to be removed
+     * @return true if operation successful
+     */
     public boolean removeScent(String id) {
         boolean result = false;
 
@@ -142,18 +156,32 @@ public class LocalDB {
         return result;
     }
 
-    //Returns the number of rated scents
+    /**
+     * Return the number of rated scents.
+     *
+     * @return the count
+     */
     public int getRatedCount() {
         Long result = DatabaseUtils.queryNumEntries(mSQLiteDatabase, SCENT_TABLE_NAME);
         return result.intValue();
     }
 
+    /**
+     * Returns the number of recommended scents.
+     *
+     * @return the count
+     */
     public int getRecommendationCount() {
         Long result = DatabaseUtils.queryNumEntries(mSQLiteDatabase, RECOMMENDATION_TABLE_NAME);
         return result.intValue();
     }
 
-    //get the ingredients of scent with the given scent id
+    /**
+     * Get the ingredients of the scent with the given scent id.
+     *
+     * @param scentId the ID
+     * @return the ingredient list
+     */
     public List<String> getIngredients(String scentId) {
         List<String> result = new ArrayList<>();
 
@@ -181,7 +209,11 @@ public class LocalDB {
 
     }
 
-    //get all recommendations
+    /**
+     * Get all recommendations.
+     *
+     * @return the list of recommended scents
+     */
     public List<ScentInfo> getRecommendations() {
         List<ScentInfo> result = new ArrayList<>();
 
@@ -213,7 +245,11 @@ public class LocalDB {
 
     }
 
-    //Gets details of all rated scents
+    /**
+     * Get details of all rated scents.
+     *
+     * @return the list of rated scents
+     */
     public List<ScentInfo> getAllRatedScents() {
 
         List<ScentInfo> result = new ArrayList<>();
@@ -250,14 +286,21 @@ public class LocalDB {
 
     }
 
-    //Clear all recommendations
+    /**
+     * Clear all recommendations
+     */
     public void clearRecommendations() {
 
         dbHelper.dropRecommendations(mSQLiteDatabase);
 
     }
 
-    //Gets the rating of a particular scent
+    /**
+     * Get the rating of a particular scent.
+     *
+     * @param id the id of the scent whose rating should be fetched
+     * @return the rating
+     */
     public float getRating(String id) {
 
         String[] columns = { "rating" };
@@ -294,42 +337,66 @@ public class LocalDB {
         return result;
     }
 
+    /**
+     * Close an instance of the database.
+     */
     public void closeDB() {
         mSQLiteDatabase.close();
     }
 
 
-
-
+    /**
+     * A helper class to handle table creation and maintenance.
+     */
     private class LocalDBHelper extends SQLiteOpenHelper {
 
-
+        /** The command to create the scent table. */
         private static final String CREATE_SCENT_TABLE =
                 "CREATE TABLE IF NOT EXISTS " + SCENT_TABLE_NAME + " (" +
                         "id TEXT PRIMARY KEY NOT NULL, " +
                         "name TEXT NOT NULL, " +
                         "rating REAL NOT NULL)";
 
+        /** The command to create the ingredient table. */
         private static final String CREATE_INGREDIENT_TABLE =
                 "CREATE TABLE IF NOT EXISTS " + INGREDIENT_TABLE_NAME + " (" +
                         "id TEXT PRIMARY KEY NOT NULL, " +
                         "name TEXT NOT NULL, " +
                         "scent_id TEXT NOT NULL)";
 
+        /** The command to create the recommendation table. */
         private static final String CREATE_RECOMMENDATION_TABLE =
                 "CREATE TABLE IF NOT EXISTS " + RECOMMENDATION_TABLE_NAME + " (" +
                         "id TEXT PRIMARY KEY NOT NULL, " +
                         "name TEXT NOT NULL)";
 
+        /** Command to drop the scent table. */
         private static final String DROP_SCENT = "DROP TABLE IF EXISTS " + SCENT_TABLE_NAME;
+
+        /** Command to drop the ingredient table. */
         private static final String DROP_INGREDIENT = "DROP TABLE IF EXISTS " + INGREDIENT_TABLE_NAME;
+
+        /** Command to drop the recommendation table. */
         private static final String DROP_RECOMMENDATION = "DROP TABLE IF EXISTS " + RECOMMENDATION_TABLE_NAME;
 
+        /**
+         * Constructs a LocalDBHelper object with the given context, name, factory, and version.
+         *
+         * @param context the context
+         * @param name the name
+         * @param factory the factory
+         * @param version the version number
+         */
         public LocalDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory,
                              int version) {
             super(context, name, factory, version);
         }
 
+        /**
+         * Instantiates the database tables if they don't already exist.
+         *
+         * @param sqLiteDatabase a SQLiteDatabase for the tables
+         */
         @Override
         public void onCreate(SQLiteDatabase sqLiteDatabase) {
             Log.d(TAG, "sqlitehelper onCreate");
@@ -338,7 +405,13 @@ public class LocalDB {
             sqLiteDatabase.execSQL(CREATE_RECOMMENDATION_TABLE);
         }
 
-
+        /**
+         * Drops the current tables and creates them anew.
+         *
+         * @param sqLiteDatabase the database for the tables
+         * @param i the int
+         * @param i1 the other int
+         */
         @Override
         public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
             Log.d(TAG, "sqlitehelper onUpgrade");
@@ -350,6 +423,11 @@ public class LocalDB {
             onCreate(sqLiteDatabase);
         }
 
+        /**
+         * Drops the recommendation table and creates a blank one.
+         *
+         * @param sqLiteDatabase the database for the table
+         */
         public void dropRecommendations(SQLiteDatabase sqLiteDatabase) {
             sqLiteDatabase.execSQL(DROP_RECOMMENDATION);
             onCreate(sqLiteDatabase);

@@ -1,42 +1,48 @@
 package com.reagankm.www.alembic.model;
 
-import android.content.Context;
-import android.content.Intent;
-import android.support.v7.widget.AppCompatRatingBar;
-import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.RatingBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
-import com.reagankm.www.alembic.R;
-import com.reagankm.www.alembic.activity.ScentActivity;
 
 /**
- * Created by reagan on 11/17/15.
+ * Gets the widgets from my item_list_scent view (the row view for each scent) and
+ * assigns their values.
+ *
+ * @author Reagan Middlebrook
+ * @version Phase 2
  */
-//Gets the widgets from my item_list_scent view (the row view for each scent)
-//and assigns their values
 public class ScentHolder extends AbstractScentHolder {
 
+    /** The tag to use when logging from this activity. */
     private static final String TAG = "ScentHolderTag";
 
+    /**
+     * Constructs a ScentHolder with the given view.
+     *
+     * @param itemView the item view
+     */
     public ScentHolder(View itemView) {
         super(itemView);
     }
 
+    /**
+     * Assigns data for the given scent to the UI widgets.
+     *
+     * @param scent the current scent
+     */
     @Override
     public void bindScent(ScentInfo scent) {
+
+        //Assign scent name
         setScent(scent);
         Log.d(TAG, "bindScent with id " + scent.getId() + ", name " + scent.getName());
         getNameTextView().setText(scent.getName());
 
-        //LocalDB db = LocalDB.getInstance(theContext);
+        //Assign rating or, if none exists, hide rating bar
         LocalDB db = new LocalDB(theContext);
         float rating = db.getRating(scent.getId());
         db.closeDB();
+
         RatingBar rb = getRatingBar();
         if (rating > 0) {
 

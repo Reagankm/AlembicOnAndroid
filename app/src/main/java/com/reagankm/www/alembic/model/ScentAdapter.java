@@ -12,21 +12,38 @@ import com.reagankm.www.alembic.R;
 import java.util.List;
 
 /**
- * Created by reagan on 11/17/15.
+ * Holds the list of scents to be displayed in a RecylerView, creates ScentHolders
+ * for them, and binds them together.
+ *
+ * @author Reagan Middlebrook
+ * @version Phase 2
  */
 public class ScentAdapter extends RecyclerView.Adapter<ScentHolder> {
-    private static final String TAG = "ScentAdapterTag";
-    private List<ScentInfo> scentList;
-    Context theContext;
 
+    /** The tag to use when logging from this activity. */
+    private static final String TAG = "ScentAdapterTag";
+
+    /** The list of ScentInfo to display.*/
+    private List<ScentInfo> scentList;
+
+    /**
+     * Creates a ScentAdapter with the given list of ScentInfo.
+     *
+     * @param scents the list
+     */
     public ScentAdapter(List<ScentInfo> scents) {
         scentList = scents;
     }
 
-    //Create a view and wrap it in a holder
+    /**
+     * Create a view and wrap it in a ScentHolder.
+     * @param parent the parent view group
+     * @param viewType the view type
+     * @return the new ScentHolder
+     */
     @Override
     public ScentHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        theContext = parent.getContext();
+        Context theContext = parent.getContext();
         Activity activity = (Activity) theContext;
         LayoutInflater inflater = LayoutInflater.from(activity);
         View v = inflater.inflate(R.layout.item_list_scent, parent, false);
@@ -34,15 +51,20 @@ public class ScentAdapter extends RecyclerView.Adapter<ScentHolder> {
         return new ScentHolder(v);
     }
 
-    //Bind a view to my model for this position
+    /**
+     * Bind a view to the ScentInfo at the selected position index.
+     *
+     * @param holder the ScentHolder to be updated
+     * @param position the position of the ScentInfo to populate the holder
+     */
     @Override
     public void onBindViewHolder(ScentHolder holder, int position) {
+
+        //Bind the scent holder to the scent
         ScentInfo scent = scentList.get(position);
-        //holder.nameTextView.setText(scent.name);
         holder.bindScent(scent);
 
         //Change color every other row
-
         if(position % 2 == 0)
         {
 
@@ -57,7 +79,11 @@ public class ScentAdapter extends RecyclerView.Adapter<ScentHolder> {
         }
     }
 
-
+    /**
+     * Gets the total number of ScentInfo items.
+     *
+     * @return the total count
+     */
     @Override
     public int getItemCount() {
         return scentList.size();
