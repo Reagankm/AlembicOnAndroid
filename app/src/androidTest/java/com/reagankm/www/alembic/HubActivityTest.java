@@ -39,7 +39,7 @@ public class HubActivityTest
 
     public void testWelcomeByName() throws Exception {
 
-        Assert.assertTrue(solo.searchText("Theodosia Tester"));
+        Assert.assertTrue(solo.searchText("Theodosia Testalot"));
     }
 
 
@@ -86,19 +86,8 @@ public class HubActivityTest
         solo.assertCurrentActivity("Wrong activity launched", ViewRatingsActivity.class);
     }
 
-    public void testLogOutMenu() throws Exception {
-        if (solo.searchText("Log Out")) {
-            solo.pressMenuItem(0);
-            solo.assertCurrentActivity("Wrong activity launched", LoginActivity.class);
-        }
-    }
 
-    public void testShareNegative() throws Exception {
-        solo.pressMenuItem(1);
-        solo.waitForDialogToOpen();
-        solo.clickOnView(solo.getView(android.R.id.button3));
-        solo.assertCurrentActivity("In the wrong place", HubActivity.class);
-    }
+
 
 
 
