@@ -45,8 +45,8 @@ public class DirectoryActivity extends FragmentActivity {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 //for debugging
-                Toast.makeText(getApplicationContext(),
-                        "Position: " + position, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(),
+//                        "Position: " + position, Toast.LENGTH_SHORT).show();
 
                 String letter = "" + ((char) (position + 64));
 

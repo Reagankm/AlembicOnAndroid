@@ -51,7 +51,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:id="@+id/update_button"
-            android:text="@string/get_new_text"
+            android:text="@string/get_scent_updates"
             />
     </LinearLayout>
 
@@ -64,7 +64,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:id="@+id/rate_button"
-            android:text="@string/rate_text"/>
+            android:text="@string/rate_scents_text"/>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:id="@+id/suggest_button"
-            android:text="@string/suggest_text"
+            android:text="@string/get_recommendation_text"
             />
 
 

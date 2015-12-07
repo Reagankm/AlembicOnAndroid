@@ -14,6 +14,8 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
@@ -35,8 +37,12 @@ public class LoginActivity extends AppCompatActivity {
     /** The tag to use when logging from this activity. */
     private static final String TAG="LoginActivityTag";
 
+    static ProfileTracker mProfileTracker;
+
     /** The Facebook login button */
     private LoginButton fbButton;
+
+    Profile userProfile;
 
     /** The skip login button (continue as guest). */
     private Button skipLoginButton;
@@ -57,6 +63,7 @@ public class LoginActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate super() just called.");
+        mProfileTracker = null;
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         Log.d(TAG, "FB Sdk just initialized");
@@ -64,8 +71,14 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         Log.d(TAG, "setContentView just occurred");
 
-        callbackManager = CallbackManager.Factory.create();
-        Log.d(TAG, "callbackManager just created");
+        if (callbackManager == null) {
+
+            callbackManager = CallbackManager.Factory.create();
+            Log.d(TAG, "callbackManager just created");
+
+        }
+
+
 
         //Get the shared preferences which can store data for later activities
         final SharedPreferences sharedPrefs = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE);
@@ -89,16 +102,45 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
 
+
                 //Record success
                 Log.d(TAG, "FB Button callback registered as SUCCESS: " + loginResult);
                 Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_LONG).show();
 
                 //Save user's profile name and id for user in other Activities
-                com.facebook.Profile profile = com.facebook.Profile.getCurrentProfile();
-                SharedPreferences.Editor editor = sharedPrefs.edit();
-                editor.putString("name", profile.getName());
-                editor.putString("id", profile.getId());
-                editor.apply();
+               userProfile = Profile.getCurrentProfile();
+                if(userProfile == null) {
+                    mProfileTracker = new ProfileTracker() {
+                        @Override
+                        protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
+                            userProfile = profile2;
+                            Log.v(TAG, "With tracker, profile2 " + profile2.getName() + ", userProfile " + userProfile.getName());
+                            SharedPreferences.Editor editor = sharedPrefs.edit();
+
+                            editor.putString("name", userProfile.getName());
+                            editor.apply();
+                            LoginActivity.mProfileTracker.stopTracking();
+                        }
+                    };
+                    mProfileTracker.startTracking();
+                }
+                else {
+
+                    Log.v(TAG, "No tracker profile: " + userProfile.getFirstName());
+                }
+
+
+                if (userProfile != null) {
+//                    Log.d(TAG, "Saving FB user's name: " + userProfile.getName());
+//                    SharedPreferences.Editor editor = sharedPrefs.edit();
+//
+//                    editor.putString("name", userProfile.getName());
+//
+//
+//                    editor.apply();
+                } else {
+                    Log.d(TAG, "Facebook user profile was null");
+                }
 
                 //Launch the next Activity
                 Intent launchHub = new Intent(LoginActivity.this, HubActivity.class);
@@ -151,10 +193,10 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v){
-
+                Log.d(TAG, "Login as guest (skip login button clicked)");
                 SharedPreferences.Editor editor = sharedPrefs.edit();
                 editor.putString("name", "Guest");
-                editor.putString("id", null);
+                Log.d(TAG, "Put Guest as name");
                 editor.apply();
 
                 Intent launchHub = new Intent(LoginActivity.this, HubActivity.class);

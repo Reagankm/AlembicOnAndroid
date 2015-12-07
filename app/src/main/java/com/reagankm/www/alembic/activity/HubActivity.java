@@ -77,7 +77,7 @@ public class HubActivity extends MenuActivity
         final SharedPreferences sharedPrefs = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE);
 
         String name = sharedPrefs.getString("name", null);
-        String id = sharedPrefs.getString("id", null);
+
 
         final TextView welcomeMessage = (TextView) findViewById(R.id.welcome_text);
 
@@ -99,7 +99,7 @@ public class HubActivity extends MenuActivity
                 com.facebook.Profile profile = com.facebook.Profile.getCurrentProfile();
                 SharedPreferences.Editor editor = sharedPrefs.edit();
                 editor.putString("name", profile.getName());
-                editor.putString("id", profile.getId());
+
                 editor.apply();
 
                 //Update user welcome name
