@@ -19,7 +19,7 @@ import com.reagankm.www.alembic.R;
  * the main hub activity.
  *
  * @author Reagan Middlebrook
- * @version Phase 1
+ * @version Phase 2
  */
 public class SplashActivity extends AppCompatActivity {
 

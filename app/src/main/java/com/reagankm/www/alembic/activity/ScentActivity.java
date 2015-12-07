@@ -2,32 +2,50 @@ package com.reagankm.www.alembic.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 
 import com.reagankm.www.alembic.R;
 import com.reagankm.www.alembic.fragment.ScentFragment;
 import com.reagankm.www.alembic.model.ScentInfo;
 
+/**
+ * Displays details of a particular scent.
+ *
+ * @author Reagan Middlebrook
+ * @version Phase 2
+ */
 public class ScentActivity extends MenuActivity {
 
+    /** A key for storing and fetching scent IDs. */
     private static final String SCENT_ID_SELECTED
             = "com.reagankm.www.alembic.scent_id_selected";
+
+    /** A key for storing and fetching scent names. */
     private static final String SCENT_NAME_SELECTED
             = "com.reagankm.www.alembic.scent_name_selected";
+
+    /** The tag to use when logging from this activity. */
     private static final String TAG = "ScentActivityTag";
 
+    /** The ID of this scent. */
     private String scentId;
+
+    /** The name of this scent. */
     private String scentName;
 
+    /**
+     * Creates the UI.
+     *
+     * @param savedInstanceState any saved instance data
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //To restore scent selected if user rotates screen
+        //Restore scent selected if user rotates screen
         if (savedInstanceState != null){
             scentId = savedInstanceState.getString(SCENT_ID_SELECTED);
             scentName = savedInstanceState.getString(SCENT_NAME_SELECTED);
@@ -37,7 +55,6 @@ public class ScentActivity extends MenuActivity {
             scentId = getIntent().getStringExtra(SCENT_ID_SELECTED);
             scentName = getIntent().getStringExtra(SCENT_NAME_SELECTED);
         }
-
 
         setContentView(R.layout.activity_scent);
 
@@ -58,19 +75,33 @@ public class ScentActivity extends MenuActivity {
                     .commit();
         }
 
-
-
     }
 
-
+    /**
+     * Get the key for storing/fetching the scent name.
+     *
+     * @return the key for the scent name
+     */
     public static String getNameKey() {
         return SCENT_NAME_SELECTED;
     }
 
+    /**
+     * Get the key for storing/fetching the scent ID.
+     * @return the key for the scent id
+     */
     public static String getIdKey() {
         return SCENT_ID_SELECTED;
     }
 
+    /**
+     * Creates an Intent for launching a ScentActivity which includes
+     * details of the chosen scent.
+     *
+     * @param packageContext the calling Activity
+     * @param scent the scent whose details should be displayed
+     * @return the Intent
+     */
     public static Intent createIntent(Context packageContext, ScentInfo scent) {
         Intent i = new Intent(packageContext, ScentActivity.class);
         i.putExtra(SCENT_ID_SELECTED, scent.getId());
@@ -80,6 +111,11 @@ public class ScentActivity extends MenuActivity {
         return i;
     }
 
+    /**
+     * Saves the current state of the scent activity.
+     *
+     * @param savedInstanceState the savedInstanceState where data can be stored
+     */
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
         super.onSaveInstanceState(savedInstanceState);

@@ -9,19 +9,32 @@ import android.support.v4.app.FragmentManager;
 
 import com.reagankm.www.alembic.R;
 import com.reagankm.www.alembic.fragment.ScentListFragment;
-import com.reagankm.www.alembic.fragment.ViewRatingsFragment;
 
+/**
+ * Displays a list of selectable scents and their ratings.
+ */
 public class ScentListActivity extends FragmentActivity {
 
+    /** A key for storing the first letter of the scents to display. */
     private static final String EXTRA_LETTER_SELECTED
             = "com.reagankm.www.alembic.extra_letter_selected";
 
+    /** The first letter of the scents to dispay. */
     private String letterSelected;
 
+    /**
+     * Get the key used to store/fetch the first letter of the scents to display.
+     *
+     * @return the key
+     */
     public static String getLetterSelectedKey() {
         return EXTRA_LETTER_SELECTED;
     }
 
+    /**
+     * Creates the UI.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +57,7 @@ public class ScentListActivity extends FragmentActivity {
             theFragment = new ScentListFragment();
             Bundle bundle = new Bundle();
 
+            //Pass the fragment the letter selected
             bundle.putString(EXTRA_LETTER_SELECTED, letterSelected);
             theFragment.setArguments(bundle);
 
@@ -56,12 +70,24 @@ public class ScentListActivity extends FragmentActivity {
 
     }
 
+    /**
+     * Create an intent that can be sued to call this activity.
+     *
+     * @param packageContext the calling activity
+     * @param letter the first letter of the scents to display in the list
+     * @return the intent
+     */
     public static Intent createIntent(Context packageContext, String letter) {
         Intent i = new Intent(packageContext, ScentListActivity.class);
         i.putExtra(EXTRA_LETTER_SELECTED, letter);
         return i;
     }
 
+    /**
+     * Save the current state of activity.
+     *
+     * @param savedInstanceState where the data can be saved
+     */
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
         super.onSaveInstanceState(savedInstanceState);

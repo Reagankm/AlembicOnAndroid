@@ -1,15 +1,26 @@
 package com.reagankm.www.alembic.activity;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 import com.reagankm.www.alembic.R;
 import com.reagankm.www.alembic.fragment.ViewRatingsFragment;
 
+
+/**
+ * Displays all rated scents.
+ *
+ * @author Reagan Middlebrook
+ * @version Phase 2
+ */
 public class ViewRatingsActivity extends MenuActivity {
 
+    /**
+     * Creates the UI.
+     *
+     * @param savedInstanceState any saved instance data
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,20 +32,10 @@ public class ViewRatingsActivity extends MenuActivity {
 
         if (theFragment == null) {
             theFragment = new ViewRatingsFragment();
-            //Bundle bundle = new Bundle();
-
-            //bundle.putString(EXTRA_LETTER_SELECTED, letterSelected);
-            //theFragment.setArguments(bundle);
 
             fragManager.beginTransaction()
                     .add(R.id.fragment_list_container, theFragment)
                     .commit();
         }
     }
-
-
-
-
-
-
 }
