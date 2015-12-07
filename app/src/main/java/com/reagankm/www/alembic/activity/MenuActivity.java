@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -24,16 +23,23 @@ import com.reagankm.www.alembic.model.ScentInfo;
 import java.util.List;
 
 /**
- * Created by reagan on 12/4/15.
+ * A base class for all activities that need the Alembic menu at the top.
+ *
+ * @author Reagan Middlebrook
+ * @version Phase 2
  */
-public class MenuActivity extends AppCompatActivity implements
+public abstract class MenuActivity extends AppCompatActivity implements
         ShareDialogFragment.ShareDialogListener {
 
     /** The tag to use when logging from this activity. */
     private static final String TAG = "MenuActivityTag";
 
-    private SharedPreferences sharedPrefs;
-
+    /**
+     * Creates the MenuActivity UI and initializes the FacebookSDK
+     * needed to determine whether user is logged in with Facebook.
+     *
+     * @param savedInstanceState any saved instance data
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,12 +64,7 @@ public class MenuActivity extends AppCompatActivity implements
             menu.findItem(R.id.action_login_toggle).setVisible(false);
         }
 
-
         menu.findItem(R.id.share_menu_item).setVisible(true);
-
-        sharedPrefs = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE);
-
-
 
         Log.d(TAG, "Create menu");
 
@@ -95,6 +96,7 @@ public class MenuActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         if (id == R.id.action_login_toggle) {
+
             //Log the user out and return them to the Login screen
 
             LoginManager.getInstance().logOut();
@@ -104,131 +106,127 @@ public class MenuActivity extends AppCompatActivity implements
 
             return true;
         } else if (id == R.id.share_menu_item) {
+
+            //Launch the share dialog
+
             DialogFragment dialog = new ShareDialogFragment();
             dialog.show(getSupportFragmentManager(), "ShareDialogFragment");
 
 
 
-        } else {
-
         }
 
         return superResult;
-
-
     }
 
+    /**
+     * If the recommendations exist, launches email client with recommendation
+     * list, otherwise directs user to get recommendations first.
+     *
+     * @param dialog the ShareDialog from which the user made their selection
+     */
     @Override
     public void onDialogShareRecommendationsClick(DialogFragment dialog) {
         Log.d(TAG, "onDialogShareRecommendationsClick");
 
-        //Get recommendations from local db if they exist, otherwise give message
-        //to go get recommendations
-
-        //LocalDB db = LocalDB.getInstance(this);
         LocalDB db = new LocalDB(this);
         int recommendationCount = db.getRecommendationCount();
-        db.closeDB();
-        Log.d(TAG, "Got instance of localDB");
+
+
         if (recommendationCount > 0) {
             Log.d(TAG, "Recommendations exist in db");
             List<ScentInfo> recommendations = db.getRecommendations();
+            db.closeDB();
             Log.d(TAG, "Got list of recommended scents");
-            StringBuilder sb = new StringBuilder();
-            sb.append(getString(R.string.recommendation_email_text) + "\n");
+
+            //Create Email text with recommended scents
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(getString(R.string.recommendation_email_text) + "\n");
 
             for (ScentInfo scent : recommendations) {
                 Log.d(TAG, "Adding scent " + scent);
 
-                sb.append(scent.toString() + "\n");
+                stringBuilder.append(scent.toString() + "\n");
 
             }
 
             Intent intent = new Intent(Intent.ACTION_SENDTO);
             Log.d(TAG, "Created intent");
-            intent.setData(Uri.parse("mailto:")); // only email apps should handle this
-            intent.putExtra(Intent.EXTRA_TEXT, sb.toString());
+
+            //Put email text and subject in the intent
+            intent.setData(Uri.parse("mailto:"));
+            intent.putExtra(Intent.EXTRA_TEXT, stringBuilder.toString());
             intent.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.recommendation_subject));
+
             Log.d(TAG, "Added text and subject to intent");
+
             if (intent.resolveActivity(getPackageManager()) != null) {
                 Log.d(TAG, "About to start intent");
                 startActivity(intent);
             }
 
-
-
-
-
         } else {
-
+            db.closeDB();
             Toast.makeText(MenuActivity.this, getString(R.string.no_recommendations_share), Toast.LENGTH_LONG).show();
-
-
-
-
         }
-
-
-
-
-
-
-
-
-
-
-
     }
 
+    /**
+     * If rated scents exist, launches email client with details,
+     * otherwise directs user to rate scents first.
+     *
+     * @param dialog the ShareDialog from which the user made their selection
+     */
     @Override
     public void onDialogShareRatingsClick(DialogFragment dialog) {
-        //Get ratings from local db if they exist, otherwise give message
-        //to rate things
 
-        //LocalDB db = LocalDB.getInstance(this);
         LocalDB db = new LocalDB(this);
 
         if (db.getRatedCount() > 0) {
             List<ScentInfo> ratings = db.getAllRatedScents();
 
+            //Add scent data for email body
             StringBuilder sb = new StringBuilder();
-            sb.append(getString(R.string.rated_email_text) + "\n\n");
+            sb.append(getString(R.string.rated_email_text));
+            sb.append("\n\n");
 
             for (ScentInfo scent : ratings) {
 
-                sb.append(scent.getName() + ": " + scent.getRating() + "\nID: " + scent.getId() + "\n\n");
+                sb.append(scent.getName());
+                sb.append(": ");
+                sb.append(scent.getRating());
+                sb.append("\nID: ");
+                sb.append(scent.getId());
+                sb.append("\n\n");
 
             }
 
+            //Create the intent and load it with email subject and body
             Intent intent = new Intent(Intent.ACTION_SENDTO);
-            intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+            intent.setData(Uri.parse("mailto:"));
             intent.putExtra(Intent.EXTRA_TEXT, sb.toString());
             intent.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.ratings_subject));
+
             if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivity(intent);
             }
 
-
         } else {
 
             Toast.makeText(MenuActivity.this, getString(R.string.no_ratings_share), Toast.LENGTH_LONG).show();
-
-
-
-
         }
 
         db.closeDB();
-
-
-
     }
 
+    /**
+     * No action is performed if user chose to cancel out of the Share dialog.
+     *
+     * @param dialog the ShareDialog from which the user made their selection
+     */
     @Override
     public void onDialogCancelShareClick(DialogFragment dialog) {
         //No action needed
-
-
     }
 
 

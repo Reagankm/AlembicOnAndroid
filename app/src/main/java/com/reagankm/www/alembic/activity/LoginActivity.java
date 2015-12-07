@@ -3,8 +3,8 @@ package com.reagankm.www.alembic.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -30,22 +30,18 @@ import java.util.Arrays;
  * continue as a guest.
  *
  * @author Reagan Middlebrook
- * @version Phase 1
+ * @version Phase 2
  */
 public class LoginActivity extends AppCompatActivity {
 
     /** The tag to use when logging from this activity. */
     private static final String TAG="LoginActivityTag";
 
-    static ProfileTracker mProfileTracker;
+    /** A ProfileTracker to track Facebook profile changes. */
+    private static ProfileTracker mProfileTracker;
 
-    /** The Facebook login button */
-    private LoginButton fbButton;
-
-    Profile userProfile;
-
-    /** The skip login button (continue as guest). */
-    private Button skipLoginButton;
+    /** The profile of the current Facebook user. */
+    private Profile userProfile;
 
     /** The callback manager to handle calls from
      * onActivityResult to Facebook's SDK */
@@ -79,13 +75,12 @@ public class LoginActivity extends AppCompatActivity {
         }
 
 
-
         //Get the shared preferences which can store data for later activities
         final SharedPreferences sharedPrefs = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE);
 
 
         //Set up the Facebook login button
-        fbButton = (LoginButton) findViewById(R.id.login_button);
+        LoginButton fbButton = (LoginButton) findViewById(R.id.login_button);
         fbButton.setReadPermissions("public_profile");
         Log.d(TAG, "created FB button and set read permissions");
 
@@ -108,13 +103,15 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_LONG).show();
 
                 //Save user's profile name and id for user in other Activities
-               userProfile = Profile.getCurrentProfile();
+                userProfile = Profile.getCurrentProfile();
+
                 if(userProfile == null) {
                     mProfileTracker = new ProfileTracker() {
                         @Override
                         protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
                             userProfile = profile2;
-                            Log.v(TAG, "With tracker, profile2 " + profile2.getName() + ", userProfile " + userProfile.getName());
+                            Log.v(TAG, "With tracker, profile2 " + profile2.getName()
+                                    + ", userProfile " + userProfile.getName());
                             SharedPreferences.Editor editor = sharedPrefs.edit();
 
                             editor.putString("name", userProfile.getName());
@@ -129,18 +126,6 @@ public class LoginActivity extends AppCompatActivity {
                     Log.v(TAG, "No tracker profile: " + userProfile.getFirstName());
                 }
 
-
-                if (userProfile != null) {
-//                    Log.d(TAG, "Saving FB user's name: " + userProfile.getName());
-//                    SharedPreferences.Editor editor = sharedPrefs.edit();
-//
-//                    editor.putString("name", userProfile.getName());
-//
-//
-//                    editor.apply();
-                } else {
-                    Log.d(TAG, "Facebook user profile was null");
-                }
 
                 //Launch the next Activity
                 Intent launchHub = new Intent(LoginActivity.this, HubActivity.class);
@@ -188,7 +173,7 @@ public class LoginActivity extends AppCompatActivity {
 
         //When skipLogin button is clicked, save the user name as "Guest" and launch
         //the main hub activity
-        skipLoginButton = (Button) findViewById(R.id.skip_login);
+        Button skipLoginButton = (Button) findViewById(R.id.skip_login);
         skipLoginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
