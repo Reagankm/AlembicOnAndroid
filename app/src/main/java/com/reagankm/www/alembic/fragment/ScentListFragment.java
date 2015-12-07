@@ -1,71 +1,61 @@
 package com.reagankm.www.alembic.fragment;
 
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-
-import android.os.Parcelable;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatRatingBar;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.reagankm.www.alembic.R;
-import com.reagankm.www.alembic.model.LocalDB;
-import com.reagankm.www.alembic.webtask.ScentQueryTask;
-import com.reagankm.www.alembic.activity.ScentActivity;
 import com.reagankm.www.alembic.activity.ScentListActivity;
-import com.reagankm.www.alembic.model.Scent;
-import com.reagankm.www.alembic.model.ScentInfo;
-
-import java.util.List;
+import com.reagankm.www.alembic.webtask.ScentQueryTask;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * Displays a list of scents that start with the same letter.
+ *
+ * @author Reagan Middlebrook
+ * @version Phase 2
  */
 public class ScentListFragment extends AbstractListFragment {
 
+    /** The tag to use when logging from this activity. */
     private static final String TAG = "ScentListFragmentTag";
 
-    private static final String LAST_POSITION
-            = "com.reagankm.www.alembic.last_position";
-
+    /** The first letter of the scents to list. */
     private String letter;
 
 
-    private int lastFirstVisiblePosition;
-
-
-
+    /**
+     * Constructs a scent list fragment.
+     */
     public ScentListFragment() {
         // Required empty public constructor
-        Log.d(TAG, "ScentListFragment created");
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
+            //Fetches the previous letter if one is available
             letter = savedInstanceState.getString(ScentListActivity.getLetterSelectedKey());
 
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        // Inflate the layout for this fragment
+        //Save the first letter of the scents to display
         letter = getArguments().getString(ScentListActivity.getLetterSelectedKey());
         Log.d(TAG, "onCreateView, the letter is " + letter);
 
@@ -73,8 +63,10 @@ public class ScentListFragment extends AbstractListFragment {
     }
 
 
-
-    //Get the list of scents starting with the chosen letter
+    /**
+     * When the Fragment is started, get the list of scents beginning
+     * with the chosen letter.
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -82,11 +74,17 @@ public class ScentListFragment extends AbstractListFragment {
         new ScentQueryTask(getContext(), this).execute(letter);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public RecyclerView fetchScentListRecyclerView() {
         return (RecyclerView) thisView.findViewById(R.id.scent_recycler_view);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public View inflateView(LayoutInflater inflater, ViewGroup container) {
         return inflater.inflate(R.layout.fragment_scent_list, container, false);

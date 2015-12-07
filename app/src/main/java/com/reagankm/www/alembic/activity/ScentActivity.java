@@ -12,7 +12,7 @@ import com.reagankm.www.alembic.fragment.ScentFragment;
 import com.reagankm.www.alembic.model.ScentInfo;
 
 /**
- * Displays details of a particular scent.
+ * Holds a fragment that displays details of a particular scent.
  *
  * @author Reagan Middlebrook
  * @version Phase 2

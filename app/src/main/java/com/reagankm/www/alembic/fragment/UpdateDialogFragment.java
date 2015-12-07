@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
@@ -19,30 +18,40 @@ import java.util.Date;
 
 
 /**
- * A simple {@link DialogFragment} subclass.
+ * Displays a dialog that asks the suer if they want to update scent data.
+ *
+ * @author Reagan Middlebrook
+ * @version Phase 2
  */
 public class UpdateDialogFragment extends DialogFragment {
 
+    /** The tag to use when logging from this fragment. */
     private static final String TAG="UpdateDialogFragmentTag";
 
+    /** A listener for the dialog buttons. */
+    private UpdateDialogListener listener;
 
-    // Use this instance of the interface to deliver action events
-    UpdateDialogListener mListener;
-
+    /**
+     * Constructs an update dialog fragment.
+     */
     public UpdateDialogFragment() {
         // Required empty public constructor
     }
 
 
 
-    // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
+    /**
+     * Saves the listener when one is attached.
+     *
+     * @param activity the calling activity
+     */
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         // Verify that the host activity implements the callback interface
         try {
             // Instantiate the NoticeDialogListener so we can send events to the host
-            mListener = (UpdateDialogListener) activity;
+            listener = (UpdateDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
@@ -54,6 +63,12 @@ public class UpdateDialogFragment extends DialogFragment {
 
 
     //gets the last updated dates and returns the newest one as a string
+
+    /**
+     * Gets the date of the most recent scent or ingredient update.
+     *
+     * @return A string representation of that date
+     */
     private String newestDate() {
         String result = "";
         Activity theActivity = getActivity();
@@ -61,9 +76,13 @@ public class UpdateDialogFragment extends DialogFragment {
                 = theActivity.getSharedPreferences(getString(R.string.prefs_file),
                 theActivity.MODE_PRIVATE);
 
+        //Get date for the last time scents were updated
         String scent_date = sharedPrefs.getString("scent_date", null);
+
+        //Get date for the last time ingredients were updated
         String ingredient_date = sharedPrefs.getString("ingredient_date", null);
 
+        //Compare them and find the most recent
         String expectedPattern = "yyyy-MM-dd HH:mm:ss";
         SimpleDateFormat formatter = new SimpleDateFormat(expectedPattern);
         try {
@@ -82,10 +101,15 @@ public class UpdateDialogFragment extends DialogFragment {
         return result;
     }
 
+    /**
+     * Creates the UI and listens for user's choice.
+     *
+     * @param savedInstanceState any saved instance data
+     * @return the dialog
+     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         String dialogString = getString(R.string.dialog_message_pt_1) + newestDate()
@@ -95,7 +119,7 @@ public class UpdateDialogFragment extends DialogFragment {
                 .setPositiveButton(R.string.yes_update, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Send the positive button event back to the host activity
-                        mListener.onDialogPositiveClick(UpdateDialogFragment.this);
+                        listener.onDialogPositiveClick(UpdateDialogFragment.this);
 
 
                     }
@@ -104,7 +128,7 @@ public class UpdateDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         // User cancelled the dialog. No further action needed.
                         // Send the negative button event back to the host activity
-                        mListener.onDialogNegativeClick(UpdateDialogFragment.this);
+                        listener.onDialogNegativeClick(UpdateDialogFragment.this);
 
                     }
                 });
@@ -116,12 +140,25 @@ public class UpdateDialogFragment extends DialogFragment {
 
 
 
-    /* The activity that creates an instance of this dialog fragment must
+    /**
+     * A listener interface to go along with this dialog fragment.
+     * The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.
-     * Each method passes the DialogFragment in case the host needs to query it. */
+     */
     public interface UpdateDialogListener {
-        public void onDialogPositiveClick(DialogFragment dialog);
-        public void onDialogNegativeClick(DialogFragment dialog);
+        /**
+         * If the user clicks yes, begin update.
+         *
+         * @param dialog the dialog
+         */
+        void onDialogPositiveClick(DialogFragment dialog);
+
+        /**
+         * If the user clicks no, do not begin update.
+         *
+         * @param dialog the dialog
+         */
+        void onDialogNegativeClick(DialogFragment dialog);
     }
 
 

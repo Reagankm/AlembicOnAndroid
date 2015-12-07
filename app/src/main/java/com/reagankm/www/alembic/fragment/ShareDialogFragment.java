@@ -3,55 +3,64 @@ package com.reagankm.www.alembic.fragment;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 
 import com.reagankm.www.alembic.R;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 /**
- * Created by reagan on 12/2/15.
+ * Displays a dialog that lets the user share their ratings or recommendations over
+ * email.
+ *
+ * @author Reagan Middlebrook
+ * @version Phase 2
  */
 public class ShareDialogFragment extends DialogFragment {
 
+    /** The tag to use when logging from this fragment. */
     private static final String TAG="ShareDialogFragmentTag";
 
+    /** A listener for the dialog buttons. */
+    private ShareDialogListener listener;
 
-    // Use this instance of the interface to deliver action events
-    ShareDialogListener mListener;
-
+    /**
+     * Constructs a share dialog fragment.
+     */
     public ShareDialogFragment() {
         // Required empty public constructor
     }
 
 
-
-    // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
+    /**
+     * Saves the listener when one is attached.
+     *
+     * @param activity the calling activity
+     */
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         // Verify that the host activity implements the callback interface
         try {
-            // Instantiate the NoticeDialogListener so we can send events to the host
-            mListener = (ShareDialogListener) activity;
+            // Instantiate the listener so we can send details to the host activity
+            listener = (ShareDialogListener) activity;
         } catch (ClassCastException e) {
-            // The activity doesn't implement the interface, throw exception
+            // If the activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
                     + " must implement ShareDialogListener");
         }
     }
 
-
+    /**
+     * Creates the UI and listens for user's choice.
+     *
+     * @param savedInstanceState any saved instance data
+     * @return the dialog
+     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        // Use the Builder class for convenient dialog construction
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         String dialogString = getString(R.string.share_dialog_text);
@@ -61,7 +70,7 @@ public class ShareDialogFragment extends DialogFragment {
 
                     public void onClick(DialogInterface dialog, int id) {
                         // Send the share recommendations button event back to the host activity
-                        mListener.onDialogShareRecommendationsClick(ShareDialogFragment.this);
+                        listener.onDialogShareRecommendationsClick(ShareDialogFragment.this);
 
 
                     }
@@ -69,9 +78,8 @@ public class ShareDialogFragment extends DialogFragment {
                 .setNegativeButton(R.string.ratings, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
-                        // User cancelled the dialog. No further action needed.
-                        // Send the negative button event back to the host activity
-                        mListener.onDialogShareRatingsClick(ShareDialogFragment.this);
+                        // Send the share ratings event back to the host
+                        listener.onDialogShareRatingsClick(ShareDialogFragment.this);
 
                     }
                 })
@@ -79,11 +87,8 @@ public class ShareDialogFragment extends DialogFragment {
             public void onClick(DialogInterface dialog, int id) {
 
 
-                // User cancelled the dialog. No further action needed.
-                // Send the negative button event back to the host activity
-
-
-                mListener.onDialogCancelShareClick(ShareDialogFragment.this);
+                // User cancelled the dialog.Send the negative button event back to the host
+                listener.onDialogCancelShareClick(ShareDialogFragment.this);
 
             }
         });
@@ -96,13 +101,30 @@ public class ShareDialogFragment extends DialogFragment {
 
 
 
-    /* The activity that creates an instance of this dialog fragment must
+    /**
+     * A listener interface to go along with this dialog fragment.
+     * The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.
-     * Each method passes the DialogFragment in case the host needs to query it. */
+     */
     public interface ShareDialogListener {
-        public void onDialogShareRecommendationsClick(DialogFragment dialog);
-        public void onDialogShareRatingsClick(DialogFragment dialog);
-        public void onDialogCancelShareClick(DialogFragment dialog);
+
+        /**
+         * The action to take when the user chooses to share recommendations.
+         * @param dialog the dialog
+         */
+        void onDialogShareRecommendationsClick(DialogFragment dialog);
+
+        /**
+         * The action to take when the user chooses to share ratings.
+         * @param dialog the dialog
+         */
+        void onDialogShareRatingsClick(DialogFragment dialog);
+
+        /**
+         * The action to take when the user chooses to cancel.
+         * @param dialog the dialog
+         */
+        void onDialogCancelShareClick(DialogFragment dialog);
     }
 
 

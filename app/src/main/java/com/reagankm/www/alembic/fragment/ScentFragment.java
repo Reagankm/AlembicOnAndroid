@@ -1,10 +1,8 @@
 package com.reagankm.www.alembic.fragment;
 
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.util.Log;
@@ -23,28 +21,35 @@ import java.util.List;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * Displays details of a given scent.
+ *
+ * @author Reagan Middlebrook
+ * @version Phase 2
  */
 public class ScentFragment extends Fragment {
 
+    /** The tag to use when logging from this activity. */
     private static final String TAG = "ScentFragmentTag";
 
+    /** The name of the scent. */
     private String name;
+
+    /** The ID of the scent. */
     private String id;
-    private TextView nameView;
-    private TextView idView;
-    private TextView ingredView;
 
-    private View thisView;
-
-    private AppCompatRatingBar rating;
-    //private LocalDB localDB;
-
+    /**
+     * Constructs a scent fragment.
+     */
     public ScentFragment() {
         // Required empty public constructor
         Log.d(TAG, "ScentFragment constructed");
     }
 
+    /**
+     * Initializes the fragment.
+     *
+     * @param savedInstanceState Any previously saved data like the scent name and id
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,30 +62,37 @@ public class ScentFragment extends Fragment {
             Log.d(TAG, "onCreate has no savedInstanceState");
         }
 
-        //localDB = LocalDB.getInstance(getContext());
-
-
-
     }
 
+    /**
+     * Creates the UI.
+     *
+     * @param inflater the layout inflater
+     * @param container the view group container
+     * @param savedInstanceState any saved instance data
+     * @return the view for the scent
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
         // Inflate the layout for this fragment
-        thisView = inflater.inflate(R.layout.fragment_scent, container, false);
+        View thisView = inflater.inflate(R.layout.fragment_scent, container, false);
 
         //Set name and id
         id = getArguments().getString(ScentActivity.getIdKey());
         name = getArguments().getString(ScentActivity.getNameKey());
         Log.d(TAG, "onCreateView, the scent info is " + id + " " + name);
 
-        nameView = (TextView) thisView.findViewById(R.id.scent_detail_name);
-        idView = (TextView) thisView.findViewById(R.id.scent_detail_id);
-        ingredView = (TextView) thisView.findViewById(R.id.ingredient_textview);
+        TextView nameView = (TextView) thisView.findViewById(R.id.scent_detail_name);
+        TextView idView = (TextView) thisView.findViewById(R.id.scent_detail_id);
+        TextView ingredView = (TextView) thisView.findViewById(R.id.ingredient_textview);
 
         nameView.setText(name);
         idView.setText(id);
+
+        //Set the ingredient list if it's known in the local database
         final LocalDB localDB = new LocalDB(getContext());
 
         List<String> ingredList = localDB.getIngredients(id);
@@ -95,13 +107,10 @@ public class ScentFragment extends Fragment {
         }
 
         //Set rating bar value and listener
-        //Activity activity = (Activity) getContext();
-
-        rating = (AppCompatRatingBar) thisView.findViewById(R.id.detail_rating_bar);
+        AppCompatRatingBar rating = (AppCompatRatingBar) thisView.findViewById(R.id.detail_rating_bar);
         rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                Activity activity = getActivity();
 
                 SharedPreferences sharedPrefs = getActivity().getSharedPreferences(getString(R.string.prefs_file), getActivity().MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -128,8 +137,6 @@ public class ScentFragment extends Fragment {
                     new GetIngredientsTask(getContext()).execute(id);
 
                 }
-
-
             }
         });
 
@@ -142,14 +149,6 @@ public class ScentFragment extends Fragment {
 
         return thisView;
     }
-
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //localDB.closeDB();
-    }
-
 
 
 }

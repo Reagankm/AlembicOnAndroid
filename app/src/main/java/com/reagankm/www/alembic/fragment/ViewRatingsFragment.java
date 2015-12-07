@@ -1,9 +1,7 @@
 package com.reagankm.www.alembic.fragment;
 
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,55 +17,64 @@ import com.reagankm.www.alembic.model.ScentInfo;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Displays a list of rated scents.
+ *
+ * @author Reagan Middlebrook
+ * @version Phase 2
  */
 public class ViewRatingsFragment extends AbstractListFragment {
 
+    /** The tag to use when logging from this activity. */
     private static final String TAG = "ViewRatingsFragmentTag";
-    //LocalDB db;
-    TextView emptyText;
-  //  Activity act;
 
-
+    /**
+     * Constructs a fragment.
+     */
     public ViewRatingsFragment() {
         // Required empty public constructor
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView");
-        View v = super.onCreateView(inflater, container, savedInstanceState);
-        //act = (Activity) getContext();
-        return v;
+        return super.onCreateView(inflater, container, savedInstanceState);
 
     }
 
-    //Get the list of rated scents
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        //db = LocalDB.getInstance(getContext());
-
-    }
-
+    /**
+     * On Resume, update the UI.
+     */
     @Override
     public void onResume() {
         super.onResume();
         updateUI();
     }
 
+    /**
+     * When the view is created, populate it with rated scents.
+     *
+     * @param view the view
+     * @param savedInstanceState any saved instance data
+     */
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        emptyText = (TextView) view.findViewById(R.id.empty_ratings_text_view);
-        //db = new LocalDB(getContext());
+
+
+        //Check whether user has rated any scents
         LocalDB db = new LocalDB(getContext());
         int count = db.getRatedCount();
         Log.d(TAG, "onCreateView: got local rated count");
         if (count == 0) {
+
             //display message telling user they haven't rated anything
+            TextView emptyText = (TextView) view.findViewById(R.id.empty_ratings_text_view);
+
             emptyText.setVisibility(View.VISIBLE);
 
             //Hide recycler view
@@ -75,8 +82,6 @@ public class ViewRatingsFragment extends AbstractListFragment {
             rv.setVisibility(View.GONE);
 
         } else {
-
-
 
             List<ScentInfo> allRatings = db.getAllRatedScents();
             if (allRatings != null && allRatings.size() > 0) {
@@ -92,13 +97,18 @@ public class ViewRatingsFragment extends AbstractListFragment {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public RecyclerView fetchScentListRecyclerView() {
         return (RecyclerView) thisView.findViewById(R.id.view_ratings_recycler_view);
     }
 
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public View inflateView(LayoutInflater inflater, ViewGroup container) {
         Log.d(TAG, "inflateView");
@@ -109,19 +119,19 @@ public class ViewRatingsFragment extends AbstractListFragment {
         return v;
     }
 
+    /**
+     * Populate the list of scents with rated scents.
+     */
     @Override
     public void updateUI() {
         LocalDB db = new LocalDB(getContext());
 
-        if (db != null) {
-            List<ScentInfo> allRatings = db.getAllRatedScents();
-            db.closeDB();
-            if (allRatings != null && allRatings.size() > 0) {
-                Scent.setAllItems(allRatings);
-            }
+
+        List<ScentInfo> allRatings = db.getAllRatedScents();
+        db.closeDB();
+        if (allRatings != null && allRatings.size() > 0) {
+            Scent.setAllItems(allRatings);
         }
-
-
 
         super.updateUI();
 

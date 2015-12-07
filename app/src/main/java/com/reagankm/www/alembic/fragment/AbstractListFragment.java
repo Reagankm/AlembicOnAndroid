@@ -1,49 +1,48 @@
 package com.reagankm.www.alembic.fragment;
 
 
-import android.content.Intent;
 import android.os.Bundle;
-
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatRatingBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.reagankm.www.alembic.R;
-import com.reagankm.www.alembic.activity.ScentActivity;
-import com.reagankm.www.alembic.activity.ScentListActivity;
-import com.reagankm.www.alembic.model.LocalDB;
 import com.reagankm.www.alembic.model.Scent;
 import com.reagankm.www.alembic.model.ScentAdapter;
-import com.reagankm.www.alembic.model.ScentHolder;
 import com.reagankm.www.alembic.model.ScentInfo;
-import com.reagankm.www.alembic.webtask.ScentQueryTask;
 
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Displays a list of scents.
+ *
+ * @author Reagan Middlebrook
+ * @version Phase 2
  */
 public abstract class AbstractListFragment extends Fragment {
 
-    View thisView;
-
-    private RecyclerView scentListRecyclerView;
-
+    /** The tag to use when logging from this activity. */
     private static final String TAG = "AbstractListFragmentTag";
 
+    /** A recycler view to hold the visible items in the list. */
+    private RecyclerView scentListRecyclerView;
+
+    /** The view for this list. */
+    protected View thisView;
 
     public AbstractListFragment() {
         // Required empty public constructor
     }
 
 
+    /**
+     * Creates the UI.
+     *
+     * @param savedInstanceState any saved instance data
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +50,14 @@ public abstract class AbstractListFragment extends Fragment {
     }
 
 
-
+    /**
+     * Creates the View for this list.
+     *
+     * @param inflater the layout inflater
+     * @param container the view group container
+     * @param savedInstanceState any saved instance data
+     * @return the view for this lsit
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -60,7 +66,6 @@ public abstract class AbstractListFragment extends Fragment {
         thisView = inflateView(inflater, container);
 
         scentListRecyclerView = fetchScentListRecyclerView();
-               // = (RecyclerView) thisView.findViewById(R.id.abstract_recycler_view);
         scentListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         updateUI();
@@ -69,8 +74,18 @@ public abstract class AbstractListFragment extends Fragment {
         return thisView;
     }
 
+    /**
+     * Inflates the view with the given layout inflater and view group.
+     *
+     * @param inflater the inflater for the layout
+     * @param container the container for the view
+     * @return the view
+     */
     public abstract View inflateView(LayoutInflater inflater, ViewGroup container);
 
+    /**
+     * Updates the current state of the list UI.
+     */
     public void updateUI() {
         List<ScentInfo> scents = Scent.getAllItems();
 
@@ -79,6 +94,10 @@ public abstract class AbstractListFragment extends Fragment {
 
     }
 
+    /**
+     * Fetch the RecyclerView (the container for the visible scents).
+     * @return the recycler view
+     */
     public abstract RecyclerView fetchScentListRecyclerView();
 
 
